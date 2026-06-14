@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Class-based dark mode: dark: utilities activate when <html class="dark"> */
+@variant dark (&:where(.dark, .dark *));
+
 /* ============================================================
    DESIGN TOKENS — ported from prototype Tailwind config
    ============================================================ */
@@ -102,6 +105,7 @@
 
   /* --- Typography --- */
   --font-sans: "Inter", system-ui, sans-serif;
+  --font-brand: "Lavishly Yours", cursive;
 
   /* NOTE: Do NOT add named --spacing-* tokens (xs/sm/md/lg/xl) here. In Tailwind v4
      those collide with size keywords and corrupt utilities like max-w-lg / max-w-xs.

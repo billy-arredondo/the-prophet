@@ -9,10 +9,10 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { to: '/groups',   icon: 'group',         label: 'Grupos'    },
-  { to: '/matches',  icon: 'emoji_events',  label: 'Partidos'  },
-  { to: '/rankings', icon: 'leaderboard',   label: 'Rankings'  },
-  { to: '/profile',  icon: 'person',        label: 'Perfil'    },
+  { to: '/groups', icon: 'group', label: 'Grupos' },
+  { to: '/matches', icon: 'emoji_events', label: 'Partidos' },
+  { to: '/rankings', icon: 'leaderboard', label: 'Rankings' },
+  { to: '/profile', icon: 'person', label: 'Perfil' },
 ];
 
 export function AppLayout() {
@@ -21,21 +21,21 @@ export function AppLayout() {
       {/* Top App Bar */}
       <header className="sticky top-0 z-40 bg-(--color-surface) shadow-sm flex items-center justify-between px-4 h-16 w-full">
         <div className="flex items-center gap-2">
-          <MaterialIcon icon="sports_soccer" className="text-(--color-stadium-green-light) text-3xl" />
-          <span className="text-xl font-bold text-(--color-stadium-green-dark) tracking-tight">
-            Mundialito
+          <MaterialIcon icon="sports_soccer" className="dark:text-[#a8d5a2] text-4xl animate-spin [animation-duration:4s]" />
+          <span className="font-brand text-4xl ml-3 text-stadium-green-dark dark:text-[#a8d5a2] leading-none">
+            The Profet
           </span>
         </div>
         <button
           aria-label="Notificaciones"
-          className="p-2 rounded-full hover:bg-(--color-surface-container) transition-colors"
+          className="p-2 rounded-full hover:bg-surface-container transition-colors"
         >
-          <MaterialIcon icon="notifications" className="text-(--color-on-surface-variant)" />
+          <MaterialIcon icon="notifications" className="text-on-surface-variant" />
         </button>
       </header>
 
       {/* Page content */}
-      <main className="flex-1 max-w-[720px] w-full mx-auto px-4 pb-32">
+      <main className="flex-1 max-w-180 w-full mx-auto px-4 pb-32">
         <Outlet />
       </main>
 
@@ -50,8 +50,8 @@ export function AppLayout() {
                 cn(
                   'flex flex-col items-center justify-center gap-0.5 transition-all duration-150',
                   isActive
-                    ? 'bg-(--color-primary-container) text-(--color-on-primary-container) rounded-full px-4 py-1'
-                    : 'text-(--color-on-surface-variant) p-2',
+                    ? 'bg-primary-container text-on-primary-container rounded-full px-4 py-1'
+                    : 'text-on-surface-variant p-2',
                 )
               }
             >

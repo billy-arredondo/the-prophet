@@ -6,14 +6,23 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { MaterialIcon } from '@/components/ui/MaterialIcon';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { teamFlagUrl } from '@/lib/flags';
 
-const FLAG_EMOJI: Record<string, string> = {
-  BRA: '🇧🇷', FRA: '🇫🇷', ARG: '🇦🇷', GER: '🇩🇪',
-  ESP: '🇪🇸', JPN: '🇯🇵', USA: '🇺🇸', MEX: '🇲🇽',
-};
-
-function flag(code: string) {
-  return FLAG_EMOJI[code] ?? '🏳️';
+function TeamFlag({ name }: { name: string }) {
+  const src = teamFlagUrl(name, 80);
+  if (src) {
+    return (
+      <img
+        src={src}
+        alt={name}
+        width={56}
+        height={38}
+        loading="lazy"
+        className="rounded shadow-sm object-cover w-14 h-[38px]"
+      />
+    );
+  }
+  return <MaterialIcon icon="flag" className="text-(--color-outline) text-4xl" />;
 }
 
 function formatKickoff(iso: string) {
@@ -123,8 +132,8 @@ function MatchCard({
       <div className="flex items-center justify-between gap-4">
         {/* Home */}
         <div className="flex flex-col items-center flex-1 text-center">
-          <div className="w-16 h-16 rounded-full bg-(--color-surface-container) flex items-center justify-center text-4xl mb-2">
-            {flag(match.homeTeam)}
+          <div className="flex items-center justify-center mb-2 h-10">
+            <TeamFlag name={match.homeTeam} />
           </div>
           <p className="text-sm font-bold truncate w-full">{match.homeTeam}</p>
         </div>
@@ -150,8 +159,8 @@ function MatchCard({
 
         {/* Away */}
         <div className="flex flex-col items-center flex-1 text-center">
-          <div className="w-16 h-16 rounded-full bg-(--color-surface-container) flex items-center justify-center text-4xl mb-2">
-            {flag(match.awayTeam)}
+          <div className="flex items-center justify-center mb-2 h-10">
+            <TeamFlag name={match.awayTeam} />
           </div>
           <p className="text-sm font-bold truncate w-full">{match.awayTeam}</p>
         </div>
