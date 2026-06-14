@@ -5,6 +5,7 @@ import { RequireAuth } from './RequireAuth';
 
 // Lazy-load routes — bundle-dynamic-imports pattern
 const LoginPage = lazy(() => import('@/features/auth/LoginPage'));
+const JoinPage = lazy(() => import('@/features/join/JoinPage'));
 const GroupsPage = lazy(() => import('@/features/groups/GroupsPage'));
 const MatchesPage = lazy(() => import('@/features/matches/MatchesPage'));
 const RankingPage = lazy(() => import('@/features/rankings/RankingPage'));
@@ -30,6 +31,14 @@ export const router = createBrowserRouter([
     element: (
       <SuspenseRoute>
         <LoginPage />
+      </SuspenseRoute>
+    ),
+  },
+  {
+    path: '/join',
+    element: (
+      <SuspenseRoute>
+        <JoinPage />
       </SuspenseRoute>
     ),
   },

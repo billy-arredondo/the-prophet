@@ -10,6 +10,7 @@ import { getAuth } from '../lib/auth.js';
 import { getNativeDb } from '../lib/db.js';
 import UserModel from '../modules/users/users.model.js';
 import { env } from '../config/env.js';
+import { readDeviceCookie, verifyDeviceToken } from '../lib/deviceToken.js';
 
 export async function requireAuth(req: Request, res: Response, next: NextFunction): Promise<void> {
   if (!getNativeDb()) {
@@ -18,6 +19,21 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
   }
 
   try {
+    // Managed members (minors) authenticate with a device-token cookie, not a
+    // Better Auth session. Check that first; fall through to Better Auth if absent/invalid.
+    const deviceToken = readDeviceCookie(req.headers.cookie);
+    if (deviceToken) {
+      const decoded = verifyDeviceToken(deviceToken);
+      if (decoded) {
+        const member = await UserModel.findById(decoded.memberId);
+        if (member && member.provider === 'guest' && member.managedBy) {
+          req.user = member;
+          next();
+          return;
+        }
+      }
+    }
+
     const auth = getAuth();
     const session = await auth.api.getSession({ headers: fromNodeHeaders(req.headers) });
 

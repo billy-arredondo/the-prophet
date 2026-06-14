@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import { useAuthStore } from '@/stores/authStore';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -11,9 +12,10 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { api } from '@/lib/api';
 import { authClient } from '@/lib/authClient';
 import { createManagedMemberSchema } from '@the-prophet/shared';
+import { useManagedMembers, useCreateManagedMember, useManagedMemberAccessLink } from '@/hooks/useManagedMembers';
+import { useUpdateProfile } from '@/hooks/useUpdateProfile';
 
 function initials(name: string) {
   return name
@@ -24,15 +26,20 @@ function initials(name: string) {
     .toUpperCase();
 }
 
-function AddManagedMemberModal({
-  open,
-  onClose,
-}: {
-  open: boolean;
-  onClose: () => void;
-}) {
+// ─── AddManagedMemberModal ────────────────────────────────────────────────────
+
+interface AccessLinkState {
+  url: string;
+  token: string;
+}
+
+function AddManagedMemberModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [accessLink, setAccessLink] = useState<AccessLinkState | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const createMember = useCreateManagedMember();
+  const getAccessLink = useManagedMemberAccessLink();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -43,14 +50,141 @@ function AddManagedMemberModal({
       setError('El nombre debe tener entre 1 y 40 caracteres.');
       return;
     }
-    setLoading(true);
     try {
-      await api.post('/api/me/managed-members', parsed.data);
-      onClose();
+      const member = await createMember.mutateAsync(parsed.data);
+      const link = await getAccessLink.mutateAsync(member.id);
+      setAccessLink(link);
     } catch {
       setError('No se pudo agregar el miembro. Intenta de nuevo.');
-    } finally {
-      setLoading(false);
+    }
+  }
+
+  function handleCopy() {
+    if (!accessLink) return;
+    navigator.clipboard.writeText(accessLink.url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  function handleClose() {
+    setAccessLink(null);
+    setError('');
+    setCopied(false);
+    onClose();
+  }
+
+  const isLoading = createMember.isPending || getAccessLink.isPending;
+
+  return (
+    <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Agregar perfil familiar</DialogTitle>
+          <DialogDescription>
+            Crea un perfil para un menor que no tiene cuenta propia. Tú administrarás sus
+            predicciones.
+          </DialogDescription>
+        </DialogHeader>
+
+        {accessLink ? (
+          /* ── Step 2: show link + QR ── */
+          <div className="flex flex-col items-center gap-6 mt-2">
+            <div className="p-4 bg-white rounded-xl shadow-sm border border-(--color-surface-container)">
+              <QRCodeSVG value={accessLink.url} size={180} level="M" />
+            </div>
+
+            <div className="w-full bg-(--color-surface-container-low) rounded-xl p-4 border border-(--color-outline-variant)/30">
+              <p className="text-xs font-bold text-(--color-on-surface-variant) mb-2 uppercase tracking-wider">
+                Enlace de acceso
+              </p>
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs text-(--color-on-surface) truncate break-all">
+                  {accessLink.url}
+                </span>
+                <button
+                  onClick={handleCopy}
+                  className="shrink-0 p-2 rounded-lg hover:bg-(--color-surface-container) transition-colors text-(--color-stadium-green-light)"
+                  aria-label="Copiar enlace"
+                >
+                  <MaterialIcon icon={copied ? 'check' : 'content_copy'} />
+                </button>
+              </div>
+            </div>
+
+            <button
+              onClick={handleCopy}
+              className="w-full h-12 bg-(--color-stadium-green-light) text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-(--color-stadium-green-dark) transition-all"
+            >
+              <MaterialIcon icon={copied ? 'check' : 'share'} />
+              {copied ? '¡Copiado!' : 'Copiar enlace'}
+            </button>
+
+            <Button variant="outline" className="w-full" onClick={handleClose}>
+              Cerrar
+            </Button>
+          </div>
+        ) : (
+          /* ── Step 1: enter name ── */
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-2">
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="managed-name"
+                className="text-sm font-bold text-(--color-on-surface)"
+              >
+                Nombre *
+              </label>
+              <Input
+                id="managed-name"
+                name="displayName"
+                placeholder="Mateo García"
+                maxLength={40}
+                required
+              />
+              {error && <p className="text-xs text-(--color-score-red)">{error}</p>}
+            </div>
+            <div className="flex gap-3">
+              <Button type="button" variant="outline" className="flex-1" onClick={handleClose}>
+                Cancelar
+              </Button>
+              <Button type="submit" className="flex-1" disabled={isLoading}>
+                {isLoading ? 'Agregando...' : 'Agregar'}
+              </Button>
+            </div>
+          </form>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// ─── EditProfileModal ─────────────────────────────────────────────────────────
+
+function EditProfileModal({
+  open,
+  onClose,
+  currentDisplayName,
+}: {
+  open: boolean;
+  onClose: () => void;
+  currentDisplayName: string;
+}) {
+  const [error, setError] = useState('');
+  const updateProfile = useUpdateProfile();
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError('');
+    const displayName = String(new FormData(e.currentTarget).get('displayName') ?? '').trim();
+    if (!displayName) {
+      setError('El nombre no puede estar vacío.');
+      return;
+    }
+    try {
+      await updateProfile.mutateAsync({ displayName });
+      onClose();
+    } catch {
+      setError('No se pudo actualizar el perfil. Intenta de nuevo.');
     }
   }
 
@@ -58,25 +192,32 @@ function AddManagedMemberModal({
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Agregar perfil familiar</DialogTitle>
-          <DialogDescription>
-            Crea un perfil para un menor que no tiene cuenta propia. Tú administrarás sus predicciones.
-          </DialogDescription>
+          <DialogTitle>Editar perfil</DialogTitle>
+          <DialogDescription>Actualiza tu nombre visible en la app.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-2">
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="managed-name" className="text-sm font-bold text-(--color-on-surface)">
+            <label
+              htmlFor="edit-display-name"
+              className="text-sm font-bold text-(--color-on-surface)"
+            >
               Nombre *
             </label>
-            <Input id="managed-name" name="displayName" placeholder="Mateo García" maxLength={40} required />
+            <Input
+              id="edit-display-name"
+              name="displayName"
+              defaultValue={currentDisplayName}
+              maxLength={40}
+              required
+            />
             {error && <p className="text-xs text-(--color-score-red)">{error}</p>}
           </div>
           <div className="flex gap-3">
             <Button type="button" variant="outline" className="flex-1" onClick={onClose}>
               Cancelar
             </Button>
-            <Button type="submit" className="flex-1" disabled={loading}>
-              {loading ? 'Agregando...' : 'Agregar'}
+            <Button type="submit" className="flex-1" disabled={updateProfile.isPending}>
+              {updateProfile.isPending ? 'Guardando...' : 'Guardar'}
             </Button>
           </div>
         </form>
@@ -85,9 +226,14 @@ function AddManagedMemberModal({
   );
 }
 
+// ─── ProfilePage ──────────────────────────────────────────────────────────────
+
 export default function ProfilePage() {
   const { user, logout } = useAuthStore();
   const [showAddMember, setShowAddMember] = useState(false);
+  const [showEditProfile, setShowEditProfile] = useState(false);
+
+  const { data: managedMembers = [] } = useManagedMembers();
 
   async function handleLogout() {
     try {
@@ -122,7 +268,7 @@ export default function ProfilePage() {
           )}
         </div>
 
-        <Button variant="outline" className="w-full max-w-xs" onClick={() => {}}>
+        <Button variant="outline" className="w-full max-w-xs" onClick={() => setShowEditProfile(true)}>
           Editar perfil
         </Button>
       </div>
@@ -143,16 +289,33 @@ export default function ProfilePage() {
               <MaterialIcon icon="add" />
             </button>
           </div>
-          <div className="p-6 text-center text-(--color-on-surface-variant)">
-            <MaterialIcon icon="child_care" className="text-4xl mb-2" />
-            <p className="text-sm">Aún no hay perfiles familiares.</p>
-            <button
-              onClick={() => setShowAddMember(true)}
-              className="mt-3 text-sm font-bold text-(--color-stadium-green-light) hover:underline"
-            >
-              Agregar ahora
-            </button>
-          </div>
+
+          {managedMembers.length === 0 ? (
+            <div className="p-6 text-center text-(--color-on-surface-variant)">
+              <MaterialIcon icon="child_care" className="text-4xl mb-2" />
+              <p className="text-sm">Aún no hay perfiles familiares.</p>
+              <button
+                onClick={() => setShowAddMember(true)}
+                className="mt-3 text-sm font-bold text-(--color-stadium-green-light) hover:underline"
+              >
+                Agregar ahora
+              </button>
+            </div>
+          ) : (
+            <ul className="divide-y divide-(--color-surface-container-low)">
+              {managedMembers.map((member) => (
+                <li key={member.id} className="flex items-center gap-4 px-6 py-4">
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src={member.photoURL ?? undefined} alt={member.displayName} />
+                    <AvatarFallback className="text-sm font-bold">
+                      {initials(member.displayName)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="flex-1 text-base text-(--color-on-surface)">{member.displayName}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 
@@ -175,12 +338,21 @@ export default function ProfilePage() {
       </div>
 
       {/* Logout */}
-      <Button variant="ghost" className="w-full mt-6 text-(--color-score-red)" onClick={handleLogout}>
+      <Button
+        variant="ghost"
+        className="w-full mt-6 text-(--color-score-red)"
+        onClick={handleLogout}
+      >
         <MaterialIcon icon="logout" className="mr-2" />
         Cerrar sesión
       </Button>
 
       <AddManagedMemberModal open={showAddMember} onClose={() => setShowAddMember(false)} />
+      <EditProfileModal
+        open={showEditProfile}
+        onClose={() => setShowEditProfile(false)}
+        currentDisplayName={user.displayName}
+      />
     </div>
   );
 }

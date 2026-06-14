@@ -16,6 +16,9 @@ router.get('/me', ctrl.getMe);
 // PATCH /me
 router.patch('/me', validate(updateProfileSchema), ctrl.updateMe);
 
+// GET  /me/managed-members
+router.get('/me/managed-members', requireGoogleAuth, ctrl.listManagedMembers);
+
 // POST /me/managed-members  — Google-authenticated admins only
 router.post(
   '/me/managed-members',

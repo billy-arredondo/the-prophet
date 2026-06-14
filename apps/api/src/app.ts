@@ -16,6 +16,7 @@ import { buildOpenApiDocument } from './lib/swagger.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 import usersRouter from './modules/users/users.routes.js';
+import deviceRouter from './modules/device/device.routes.js';
 import groupsRouter from './modules/groups/groups.routes.js';
 import tournamentsRouter from './modules/tournaments/tournaments.routes.js';
 import matchesRouter from './modules/matches/matches.routes.js';
@@ -71,6 +72,7 @@ export function createApp() {
   });
 
   // ── API routers ────────────────────────────────────────────────────────────
+  app.use('/api', apiLimiter, deviceRouter);
   app.use('/api', apiLimiter, usersRouter);
   app.use('/api', apiLimiter, groupsRouter);
   app.use('/api', apiLimiter, tournamentsRouter);

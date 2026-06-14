@@ -3,10 +3,10 @@
  */
 import mongoose from 'mongoose';
 import type { UpdateProfileInput, CreateManagedMemberInput } from '@the-prophet/shared';
-import { INVITE_CODE_ALPHABET } from '@the-prophet/shared';
 import UserModel, { type IUserDocument } from './users.model.js';
 import { AppError } from '../../middleware/errorHandler.js';
 import { env } from '../../config/env.js';
+import { signDeviceToken } from '../../lib/deviceToken.js';
 
 export async function getProfile(userId: string): Promise<IUserDocument> {
   const user = await UserModel.findById(userId);
@@ -23,15 +23,6 @@ export async function updateProfile(
   return user;
 }
 
-/** Generates a short random token for managed-member access links */
-function generateAccessToken(): string {
-  let token = '';
-  for (let i = 0; i < 32; i++) {
-    token += INVITE_CODE_ALPHABET[Math.floor(Math.random() * INVITE_CODE_ALPHABET.length)];
-  }
-  return token;
-}
-
 /**
  * Create a managed (guest) member on behalf of an admin user.
  * The admin must be Google-authenticated (enforced at route level).
@@ -44,6 +35,11 @@ export async function createManagedMember(
   // but worth noting for future enforcement.
 
   const member = await UserModel.create({
+    // _id is Mixed and Mongoose neither auto-generates nor casts it on queries.
+    // Store a string id (like Better Auth users) so string lookups — findById,
+    // access-link, device redeem — match. (A raw ObjectId would not match the
+    // string id sent from the client.)
+    _id: new mongoose.Types.ObjectId().toString(),
     displayName: input.displayName,
     email: null,
     photoURL: null,
@@ -56,9 +52,9 @@ export async function createManagedMember(
 }
 
 /**
- * Generate a short-lived access link token for a managed member.
- * The token encodes the member id; sign with DEVICE_TOKEN_SECRET.
- * TODO: replace with a proper JWT signed with env.DEVICE_TOKEN_SECRET.
+ * Generate an access link for a managed member: a JWT device token signed with
+ * DEVICE_TOKEN_SECRET (the member id is embedded in the token). The device
+ * redeems it at POST /api/device/session — see lib/deviceToken.ts.
  */
 export async function generateManagedMemberAccessLink(
   adminId: string,
@@ -73,9 +69,8 @@ export async function generateManagedMemberAccessLink(
     throw new AppError(404, 'Managed member not found or not owned by you', 'NOT_FOUND');
   }
 
-  // TODO: sign a JWT with { sub: memberId, iat, exp } using env.DEVICE_TOKEN_SECRET
-  const token = generateAccessToken();
-  const url = `${env.WEB_ORIGIN}/join?token=${token}&uid=${memberId}`;
+  const token = signDeviceToken(String(member._id));
+  const url = `${env.WEB_ORIGIN}/join?token=${encodeURIComponent(token)}`;
 
   return { url, token };
 }

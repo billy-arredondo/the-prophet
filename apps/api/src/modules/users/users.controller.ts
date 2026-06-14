@@ -32,6 +32,19 @@ export async function createManagedMember(
   }
 }
 
+export async function listManagedMembers(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const members = await usersService.getManagedMembers(String(req.user!._id));
+    res.json(members.map((m) => m.toJSON()));
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function getManagedMemberAccessLink(
   req: Request,
   res: Response,
