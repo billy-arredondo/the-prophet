@@ -113,6 +113,85 @@
 }
 
 /* ============================================================
+   DARK MODE TOKENS
+   Applied when <html class="dark"> is set by ThemeApplier.
+   Only the tokens that visually differ from light are listed.
+   ============================================================ */
+.dark {
+  color-scheme: dark;
+
+  /* Surfaces */
+  --color-surface: #111714;
+  --color-surface-bright: #1d201b;
+  --color-surface-dim: #0e110d;
+  --color-surface-variant: #3d4439;
+  --color-surface-container-lowest: #0b0f0a;
+  --color-surface-container-low: #191c18;
+  --color-surface-container: #1d201b;
+  --color-surface-container-high: #272b25;
+  --color-surface-container-highest: #323630;
+
+  /* Background */
+  --color-background: #111714;
+  --color-on-background: #e1e3de;
+
+  /* Primary */
+  --color-on-primary-container: #90d689;
+
+  /* On-surface / neutral */
+  --color-on-surface: #e1e3de;
+  --color-on-surface-variant: #c1c9bb;
+  --color-outline: #8b9387;
+  --color-outline-variant: #41493e;
+  --color-inverse-surface: #e1e3de;
+  --color-inverse-on-surface: #2e3132;
+
+  /* Remap white tokens so bg-(--color-jersey-white) and similar go dark */
+  --color-jersey-white: #1d201b;
+
+  /* shadcn mapped vars */
+  --background: #111714;
+  --foreground: #e1e3de;
+  --card: #1d201b;
+  --card-foreground: #e1e3de;
+  --popover: #1d201b;
+  --popover-foreground: #e1e3de;
+  --secondary: #272b25;
+  --secondary-foreground: #e1e3de;
+  --muted: #272b25;
+  --muted-foreground: #c1c9bb;
+  --border: #41493e;
+  --input: #41493e;
+}
+
+/* bg-white and border-white are Tailwind utilities that emit literal #fff —
+   they don't read from CSS vars, so we override them at the selector level. */
+.dark .bg-white {
+  background-color: var(--color-surface-container);
+}
+
+.dark .bg-white\/50 {
+  background-color: var(--color-surface-container-low);
+}
+
+.dark .border-white {
+  border-color: var(--color-outline-variant);
+}
+
+/* Harden shadows in dark mode — rgba(0,0,0,0.05) is invisible on dark surfaces */
+.dark .shadow-sm {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+}
+
+.dark [class*='shadow-[0px_4px'] {
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.4);
+}
+
+.dark [class*='shadow-[0px_8px'] {
+  box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================================
    BASE STYLES
    ============================================================ */
 *,

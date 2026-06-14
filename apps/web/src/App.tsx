@@ -4,6 +4,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './lib/queryClient';
 import { router } from './router';
 import { useAuthStore } from './stores/authStore';
+import { useUiStore } from './stores/uiStore';
 import { api } from './lib/api';
 import type { User } from '@the-prophet/shared';
 
@@ -28,9 +29,18 @@ function SessionRestorer() {
   return null;
 }
 
+function ThemeApplier() {
+  const theme = useUiStore((s) => s.theme);
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
+  return null;
+}
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <ThemeApplier />
       <SessionRestorer />
       <RouterProvider router={router} />
     </QueryClientProvider>

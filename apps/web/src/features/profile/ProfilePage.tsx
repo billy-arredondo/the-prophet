@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { useAuthStore } from '@/stores/authStore';
+import { useUiStore } from '@/stores/uiStore';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -230,6 +231,7 @@ function EditProfileModal({
 
 export default function ProfilePage() {
   const { user, logout } = useAuthStore();
+  const { theme, toggleTheme } = useUiStore();
   const [showAddMember, setShowAddMember] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false);
 
@@ -321,6 +323,21 @@ export default function ProfilePage() {
 
       {/* Settings list */}
       <div className="bg-white rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] border border-(--color-outline-variant)/30 overflow-hidden">
+        {/* Theme toggle */}
+        <button
+          onClick={toggleTheme}
+          className="w-full flex items-center gap-4 px-6 py-4 hover:bg-(--color-surface-container-low) transition-colors border-b border-(--color-surface-container-low) text-left"
+        >
+          <MaterialIcon
+            icon={theme === 'dark' ? 'light_mode' : 'dark_mode'}
+            className="text-(--color-on-surface-variant)"
+          />
+          <span className="flex-1 text-base text-(--color-on-surface)">Apariencia</span>
+          <span className="text-sm font-medium text-(--color-on-surface-variant)">
+            {theme === 'dark' ? 'Oscuro' : 'Claro'}
+          </span>
+        </button>
+
         {[
           { icon: 'notifications', label: 'Notificaciones' },
           { icon: 'privacy_tip', label: 'Privacidad' },
