@@ -50,59 +50,60 @@ export default function LoginPage() {
       {/* Decorative background orbs */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <ConfettiOrb
-          className="top-10 left-10 w-4 h-4 bg-(--color-stadium-green-light) opacity-20"
+          className="top-10 left-10 w-4 h-4 bg-stadium-green-light opacity-20"
           style={{ animationDelay: '0s' }}
         />
         <ConfettiOrb
-          className="top-20 right-20 w-3 h-3 bg-(--color-secondary-container) opacity-20"
+          className="top-20 right-20 w-3 h-3 bg-secondary-container opacity-20"
           style={{ animationDelay: '2s' }}
         />
         <ConfettiOrb
-          className="top-40 left-1/4 w-5 h-5 bg-(--color-tertiary-container) opacity-10"
+          className="top-40 left-1/4 w-5 h-5 bg-tertiary-container opacity-10"
           style={{ animationDelay: '5s' }}
         />
         <ConfettiOrb
-          className="top-60 right-1/3 w-4 h-4 bg-(--color-action-blue) opacity-20"
+          className="top-60 right-1/3 w-4 h-4 bg-action-blue opacity-20"
           style={{ animationDelay: '1s' }}
         />
       </div>
 
       {/* Main canvas */}
-      <main className="flex-grow flex flex-col items-center justify-center relative z-10 px-4 md:px-10 py-6 max-w-lg mx-auto w-full">
+      <main className="grow flex flex-col items-center justify-center relative z-10 px-4 md:px-10 py-6 max-w-lg mx-auto w-full">
         {/* Branding */}
         <div className="flex items-center gap-2 mb-8">
           <MaterialIcon
             icon="sports_soccer"
-            className="text-(--color-stadium-green-light) text-4xl"
+            className="text-stadium-green-light text-4xl"
           />
-          <span className="text-xl font-bold text-(--color-stadium-green-dark)">Mundialito</span>
+          <span className="text-xl font-bold text-stadium-green-dark">The Prophet</span>
         </div>
 
         {/* Hero */}
         <div className="w-full flex flex-col items-center mb-8">
           <div className="relative w-64 h-64 md:w-80 md:h-80 mb-6">
             {/* Glow */}
-            <div className="absolute inset-0 bg-(--color-stadium-green-light) opacity-10 blur-3xl rounded-full" />
+            <div className="absolute inset-0 bg-stadium-green-light opacity-10 blur-3xl rounded-full" />
             {/* Floating ball */}
             <div className="relative z-10 w-full h-full flex items-center justify-center">
               <div className="animate-float relative">
                 {/* Placeholder soccer ball SVG */}
-                <div className="w-56 h-56 md:w-72 md:h-72 rounded-full bg-gradient-to-br from-(--color-stadium-green-light) to-(--color-stadium-green-dark) shadow-2xl border-4 border-white flex items-center justify-center">
+                <div className="w-56 h-56 md:w-72 md:h-72 rounded-full bg-linear-to-br from-stadium-green-light to-stadium-green-dark shadow-2xl border-4 border-white flex items-center justify-center">
                   <MaterialIcon
                     icon="sports_soccer"
-                    className="text-white text-[120px] md:text-[140px]"
+                    size={100}
+                    className="text-white animate-spin [animation-duration:4s]"
                   />
                 </div>
                 {/* Trophy badge */}
-                <div className="absolute -top-4 -right-4 bg-(--color-secondary-container) p-3 rounded-full shadow-lg border-2 border-white">
+                <div className="absolute -top-4 -right-4 bg-secondary-container p-3 rounded-full shadow-lg border-2 border-white">
                   <MaterialIcon
                     icon="emoji_events"
                     filled
-                    className="text-(--color-on-secondary-container)"
+                    className="text-on-secondary-container"
                   />
                 </div>
                 {/* Group badge */}
-                <div className="absolute -bottom-2 -left-2 bg-(--color-action-blue) p-3 rounded-full shadow-lg border-2 border-white">
+                <div className="absolute -bottom-2 -left-2 bg-action-blue p-3 rounded-full shadow-lg border-2 border-white">
                   <MaterialIcon icon="group" filled className="text-white" />
                 </div>
               </div>
@@ -111,21 +112,21 @@ export default function LoginPage() {
 
           {/* Headline */}
           <div className="text-center space-y-2">
-            <h1 className="text-2xl md:text-3xl font-bold text-(--color-stadium-green-dark) leading-tight">
+            <h1 className="text-2xl md:text-3xl font-bold text-stadium-green-dark leading-tight">
               Mundialito 2026
             </h1>
-            <p className="text-lg text-(--color-on-surface-variant) max-w-xs mx-auto">
-              Predice, Compite, Gana en Familia
+            <p className="text-lg text-on-surface-variant max-w-xs mx-auto">
+              ¡Predice, compite y gana en familia!
             </p>
           </div>
         </div>
 
         {/* Action Card */}
-        <div className="w-full bg-white rounded-xl shadow-[0px_8px_24px_rgba(0,0,0,0.08)] p-6 space-y-4 border border-(--color-surface-container)">
+        <div className="w-full bg-white rounded-xl shadow-[0px_8px_24px_rgba(0,0,0,0.08)] p-6 space-y-4 border border-surface-container">
           {/* Google Sign In */}
           <button
             onClick={handleGoogleLogin}
-            className="button-press w-full bg-(--color-stadium-green-light) hover:bg-(--color-stadium-green-dark) text-white font-bold h-12 rounded-full flex items-center justify-center gap-4 transition-all"
+            className="button-press w-full bg-stadium-green-light hover:bg-stadium-green-dark text-white font-bold h-12 rounded-full flex items-center justify-center gap-4 transition-all"
           >
             <GoogleIcon />
             Continuar con Google
@@ -133,17 +134,17 @@ export default function LoginPage() {
 
           {/* Divider */}
           <div className="relative flex items-center py-2">
-            <div className="flex-grow border-t border-(--color-outline-variant)" />
-            <span className="flex-shrink mx-4 text-xs font-medium text-(--color-on-surface-variant)">
+            <div className="grow border-t border-outline-variant" />
+            <span className="shrink mx-4 text-xs font-medium text-on-surface-variant">
               o también
             </span>
-            <div className="flex-grow border-t border-(--color-outline-variant)" />
+            <div className="grow border-t border-outline-variant" />
           </div>
 
           {/* Email (placeholder for MVP) */}
           <button
             disabled
-            className="w-full bg-white border-2 border-(--color-outline-variant) text-(--color-on-surface-variant) font-bold h-12 rounded-full flex items-center justify-center opacity-50 cursor-not-allowed"
+            className="w-full bg-white border-2 border-outline-variant text-on-surface-variant font-bold h-12 rounded-full flex items-center justify-center opacity-50 cursor-not-allowed"
             title="Próximamente"
           >
             Usar correo electrónico
@@ -153,7 +154,7 @@ export default function LoginPage() {
           <div className="text-center pt-1">
             <button
               onClick={handleGuestLogin}
-              className="text-sm font-bold text-(--color-on-surface-variant) hover:text-(--color-stadium-green-dark) underline underline-offset-4 transition-colors"
+              className="text-sm font-bold text-on-surface-variant hover:text-stadium-green-dark underline underline-offset-4 transition-colors"
             >
               Entrar como Invitado
             </button>
@@ -162,13 +163,13 @@ export default function LoginPage() {
 
         {/* Footer */}
         <footer className="mt-8 text-center">
-          <p className="text-xs text-(--color-outline) px-4 leading-relaxed">
+          <p className="text-xs text-outline px-4 leading-relaxed">
             Al continuar, aceptas nuestros{' '}
-            <a href="#" className="text-(--color-stadium-green-light) font-medium">
+            <a href="#" className="text-stadium-green-light font-medium">
               Términos de Servicio
             </a>{' '}
             y{' '}
-            <a href="#" className="text-(--color-stadium-green-light) font-medium">
+            <a href="#" className="text-stadium-green-light font-medium">
               Política de Privacidad
             </a>
             .
@@ -178,12 +179,12 @@ export default function LoginPage() {
 
       {/* Stadium crowd silhouette */}
       <div className="relative w-full h-24 mt-auto overflow-hidden opacity-10">
-        <div className="absolute bottom-0 w-full h-full bg-(--color-stadium-green-dark) stadium-curve" />
+        <div className="absolute bottom-0 w-full h-full bg-stadium-green-dark stadium-curve" />
         <div className="absolute bottom-0 flex justify-around w-full px-4">
           {[8, 12, 6, 10, 8, 14, 7, 11].map((h, i) => (
             <div
               key={i}
-              className="w-4 bg-(--color-stadium-green-light) rounded-t-full"
+              className="w-4 bg-stadium-green-light rounded-t-full"
               style={{ height: `${h * 4}px` }}
             />
           ))}
