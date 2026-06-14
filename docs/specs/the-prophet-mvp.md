@@ -103,7 +103,7 @@ Leyenda: ✅ HECHO · 🟡 PARCIAL · ⬜ PENDIENTE
 | **Integración contrato front↔back + auth** | ✅     | Cliente Better Auth, endpoints alineados y matches por estado; **verificado e2e** (2026-06-14): login Invitado y Google → `/groups`; `/api/me` clasifica guest (email null) OK; predictions/groups/matches responden; logout OK.                                                                |
 | **1 — Auth & usuarios**                    | 🟡     | Google + invitado verificados e2e. **Token de dispositivo** para menores (JWT + cookie + ruta `/join` + canje), **perfiles gestionados** (crear/listar + link/QR) y **editar perfil** hechos (2026-06-14). **Pendiente:** account linking invitado→Google (diferido). |
 | **2 — Grupos**                             | ✅     | Grupos reales e2e: lista/crear/unirse, selección→detalle (ranking), invitación link/QR (copiar **código** y **enlace** por separado) y `/join` con `?next=` (preserva el código en el login). Mocks eliminados. Seed de torneo por defecto (`ensureDefaultTournament`).                                                                     |
-| **3 — Torneo & matches**                   | 🟡     | `GET /matches?status=` añadido. **Pendiente:** elegir e integrar API de fútbol, seed WC2026, job de sync real.                                                                                       |
+| **3 — Torneo & matches**                   | ✅     | Integración **football-data.org** (`FootballDataOrgClient`, header `X-Auth-Token`, rate-limit aware); torneo con `externalId='WC'`; `syncMatches` cada 5 min upserta fixtures+scores; enum `MatchStage` ahora incluye `r32`. Verificado e2e: 104 partidos WC2026 reales (próximos/en vivo/finalizados) en `MatchesPage` sin mocks. |
 | **4 — Predicciones**                       | 🟡     | Upsert + kickoff lock en backend; UI con endpoints alineados. **Pendiente:** e2e y quitar mocks.                                                                                                     |
 | **5 — Resultados & scoring**               | 🟡     | Scoring puro + confirmación/override + ranking en transacción existen. **Pendiente:** UI de super-admin y re-scoring por delta.                                                                      |
 | **6 — Pulido & deploy**                    | ⬜     | Fidelidad a prototipos, estados vacíos/skeletons, índices, deploy (web + api + CI).                                                                                                                  |
@@ -152,6 +152,15 @@ Leyenda: ✅ HECHO · 🟡 PARCIAL · ⬜ PENDIENTE
 - `JoinPage` + `LoginPage`: `?next=` preserva el código de invitación a través del login; al unirse, navega al grupo.
 - `CreateGroupModal` usa el id real del torneo activo (`useTournaments`); backend `ensureDefaultTournament()` seedea WC2026 al arrancar (arregla el 500 por el `tournamentId` placeholder).
 - Login: hero con imagen real del balón + máscara radial para fundir el borde.
+
+**2026-06-14 — Fase 3: Torneo & matches**
+
+- Integración **football-data.org**: `FootballDataOrgClient` en `lib/footballApi.ts` (header `X-Auth-Token`, mapeo stage/group/status/score, bail en 429, lee `x-requests-available-minute`).
+- Torneo con `externalId` (`'WC'`); `ensureDefaultTournament` lo setea/backfillea.
+- `MatchStage` + esquema Zod + modelo: añadido `r32` (dieciseisavos del Mundial de 48 equipos).
+- `syncMatches` cada 5 min upserta fixtures + marcadores reales (run inmediato al arrancar).
+- `MatchesPage`: mocks y `72'` hardcodeado eliminados; datos reales en las 3 pestañas.
+- Key en `apps/api/.env` (gitignored) + `FOOTBALL_API_PROVIDER=football-data`.
 
 > Nota operativa: Better Auth se inicializa **una sola vez al arrancar** (`server.ts`:
 > `connectDb → initAuth`). Si Mongo no está conectado al arranque, el auth queda sin adapter hasta
