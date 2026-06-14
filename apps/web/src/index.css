@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DESIGN TOKENS — ported from prototype Tailwind config
+   ============================================================ */
+@theme {
+  /* --- Color palette --- */
+  --color-pitch-black: #121212;
+  --color-jersey-white: #ffffff;
+
+  /* Surfaces */
+  --color-surface: #f8f9fa;
+  --color-surface-bright: #f8f9fa;
+  --color-surface-dim: #d9dadb;
+  --color-surface-variant: #e1e3e4;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f3f4f5;
+  --color-surface-container: #edeeef;
+  --color-surface-container-high: #e7e8e9;
+  --color-surface-container-highest: #e1e3e4;
+
+  /* Background */
+  --color-background: #f8f9fa;
+  --color-on-background: #191c1d;
+
+  /* Primary (Stadium Green) */
+  --color-primary: #00450d;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #1b5e20;
+  --color-on-primary-container: #90d689;
+  --color-primary-fixed: #acf4a4;
+  --color-primary-fixed-dim: #91d78a;
+  --color-on-primary-fixed: #002203;
+  --color-on-primary-fixed-variant: #0c5216;
+  --color-inverse-primary: #91d78a;
+  --color-surface-tint: #2a6b2c;
+
+  /* App-specific greens */
+  --color-stadium-green-light: #4c9141;
+  --color-stadium-green-dark: #003300;
+
+  /* Secondary (Trophy Gold) */
+  --color-secondary: #705d00;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #fcd400;
+  --color-on-secondary-container: #6e5c00;
+  --color-secondary-fixed: #ffe16d;
+  --color-secondary-fixed-dim: #e9c400;
+  --color-on-secondary-fixed: #221b00;
+  --color-on-secondary-fixed-variant: #544600;
+  --color-trophy-gold-muted: #ffecb3;
+
+  /* Tertiary (Score Red) */
+  --color-tertiary: #7c000b;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #a70515;
+  --color-on-tertiary-container: #ffb2aa;
+  --color-tertiary-fixed: #ffdad6;
+  --color-tertiary-fixed-dim: #ffb3ac;
+  --color-on-tertiary-fixed: #410003;
+  --color-on-tertiary-fixed-variant: #930010;
+  --color-score-red: #e53935;
+
+  /* Action Blue */
+  --color-action-blue: #1976d2;
+
+  /* On-surface / neutral */
+  --color-on-surface: #191c1d;
+  --color-on-surface-variant: #41493e;
+  --color-outline: #717a6d;
+  --color-outline-variant: #c0c9bb;
+  --color-inverse-surface: #2e3132;
+  --color-inverse-on-surface: #f0f1f2;
+
+  /* Error */
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* --- shadcn CSS variables (mapped to palette) --- */
+  --background: #f8f9fa;
+  --foreground: #191c1d;
+  --card: #ffffff;
+  --card-foreground: #191c1d;
+  --popover: #ffffff;
+  --popover-foreground: #191c1d;
+  --primary: #00450d;
+  --primary-foreground: #ffffff;
+  --secondary: #f3f4f5;
+  --secondary-foreground: #191c1d;
+  --muted: #edeeef;
+  --muted-foreground: #41493e;
+  --accent: #1b5e20;
+  --accent-foreground: #90d689;
+  --destructive: #e53935;
+  --destructive-foreground: #ffffff;
+  --border: #c0c9bb;
+  --input: #c0c9bb;
+  --ring: #4c9141;
+  --radius: 0.75rem;
+
+  /* --- Typography --- */
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  /* NOTE: Do NOT add named --spacing-* tokens (xs/sm/md/lg/xl) here. In Tailwind v4
+     those collide with size keywords and corrupt utilities like max-w-lg / max-w-xs.
+     Use the numeric spacing scale (p-4, gap-6, max-w-lg = the default container sizes). */
+
+  /* --- Border radius --- */
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+}
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  min-height: max(884px, 100dvh);
+}
+
+/* ============================================================
+   MATERIAL SYMBOLS
+   ============================================================ */
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  user-select: none;
+  vertical-align: middle;
+  line-height: 1;
+  display: inline-block;
+}
+
+.material-symbols-outlined.filled {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%       { transform: translateY(-20px) rotate(5deg); }
+}
+
+@keyframes confetti-fall {
+  0%   { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-confetti {
+  animation: confetti-fall 10s linear infinite;
+}
+
+/* ============================================================
+   COMPONENT UTILITIES
+   ============================================================ */
+
+/* Bento card micro-interaction */
+.bento-card {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.bento-card:active {
+  transform: scale(0.97);
+}
+
+/* Active press scale */
+.active-scale:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+/* Button press */
+.button-press {
+  transition: transform 0.1s ease-out;
+}
+.button-press:active {
+  transform: scale(0.96);
+}
+
+/* Stadium curve decorative shape */
+.stadium-curve {
+  border-radius: 50% 50% 0 0 / 20% 20% 0 0;
+}
+
+/* No scrollbar utility */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Active tab indicator */
+.tab-active {
+  position: relative;
+  color: var(--color-stadium-green-light);
+}
+.tab-active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--color-stadium-green-light);
+  border-radius: 99px;
+}
+
+/* Safe area padding for bottom nav */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+}
