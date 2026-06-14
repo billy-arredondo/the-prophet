@@ -10,12 +10,13 @@
 
 ## 1. Objetivo y alcance
 
-**The Prophet** (marca visible: *Mundialito 2026*) es un juego **privado de predicciones** del
+**The Prophet** (marca visible: _Mundialito 2026_) es un juego **privado de predicciones** del
 Mundial 2026 para familia y amigos. Se crean/unen grupos privados, se predice el marcador de cada
 partido y se compite en un ranking por grupo. **No es apuestas:** sin dinero, sin premios, sin pagos.
 La moneda es puntaje, no convertible.
 
 **Dentro del MVP:**
+
 - Auth: **Google** (adultos/admins) + **Invitado/anónimo** (menores gestionados, sin correo).
 - **Grupos privados** por invitación (link/código/QR), con admins y miembros.
 - **Predicción global por usuario** (una predicción por partido cuenta en todos sus grupos).
@@ -78,7 +79,7 @@ Todas bajo `/api`. Errores con formato `{ error: { code, message } }`.
 
 **Tournaments:** `GET /tournaments` · `GET /tournaments/:id`
 
-**Matches:** `GET /tournaments/:id/matches` · `GET /matches?status=&tournamentId=` *(nuevo)* ·
+**Matches:** `GET /tournaments/:id/matches` · `GET /matches?status=&tournamentId=` _(nuevo)_ ·
 `GET /matches/:id`
 
 **Predictions:** `PUT /matches/:id/prediction` (upsert, bloqueado por kickoff) · `GET /me/predictions`
@@ -96,23 +97,24 @@ Swagger: `GET /docs`. Health: `GET /health`.
 
 Leyenda: ✅ HECHO · 🟡 PARCIAL · ⬜ PENDIENTE
 
-| Fase | Estado | Detalle |
-|---|---|---|
-| **0 — Fundación** | ✅ | Monorepo pnpm; `packages/shared` (tipos+Zod); API por módulos (auth/scoring/swagger/middlewares/job); web con router lazy, stores, hooks Query y 5 pantallas; `ci.yml` creado. |
-| **Integración contrato front↔back + auth** | 🟡 | Cliente Better Auth, endpoints alineados y endpoint de matches por estado **hechos**; falta **verificación e2e** con Mongo conectado. |
-| **1 — Auth & usuarios** | 🟡 | Google + invitado vía Better Auth operativos; `requireAuth` espeja el `users` de dominio al primer login. **Pendiente:** JWT de token de dispositivo para menores, account linking, "editar perfil". |
-| **2 — Grupos** | 🟡 | Endpoints completos (invite code, cap de 10, último-admin). **Pendiente:** probar e2e (invitación link+QR) y quitar mocks de UI. |
-| **3 — Torneo & matches** | 🟡 | `GET /matches?status=` añadido. **Pendiente:** elegir e integrar API de fútbol, seed WC2026, job de sync real. |
-| **4 — Predicciones** | 🟡 | Upsert + kickoff lock en backend; UI con endpoints alineados. **Pendiente:** e2e y quitar mocks. |
-| **5 — Resultados & scoring** | 🟡 | Scoring puro + confirmación/override + ranking en transacción existen. **Pendiente:** UI de super-admin y re-scoring por delta. |
-| **6 — Pulido & deploy** | ⬜ | Fidelidad a prototipos, estados vacíos/skeletons, índices, deploy (web + api + CI). |
-| **7 — Opcional** | ⬜ | Web Push, grupos públicos, feed narrativo, puntos configurables, dark mode. |
+| Fase                                       | Estado | Detalle                                                                                                                                                                                              |
+| ------------------------------------------ | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **0 — Fundación**                          | ✅     | Monorepo pnpm; `packages/shared` (tipos+Zod); API por módulos (auth/scoring/swagger/middlewares/job); web con router lazy, stores, hooks Query y 5 pantallas; `ci.yml` creado.                       |
+| **Integración contrato front↔back + auth** | 🟡     | Cliente Better Auth, endpoints alineados y endpoint de matches por estado **hechos**; falta **verificación e2e** con Mongo conectado.                                                                |
+| **1 — Auth & usuarios**                    | 🟡     | Google + invitado vía Better Auth operativos; `requireAuth` espeja el `users` de dominio al primer login. **Pendiente:** JWT de token de dispositivo para menores, account linking, "editar perfil". |
+| **2 — Grupos**                             | 🟡     | Endpoints completos (invite code, cap de 10, último-admin). **Pendiente:** probar e2e (invitación link+QR) y quitar mocks de UI.                                                                     |
+| **3 — Torneo & matches**                   | 🟡     | `GET /matches?status=` añadido. **Pendiente:** elegir e integrar API de fútbol, seed WC2026, job de sync real.                                                                                       |
+| **4 — Predicciones**                       | 🟡     | Upsert + kickoff lock en backend; UI con endpoints alineados. **Pendiente:** e2e y quitar mocks.                                                                                                     |
+| **5 — Resultados & scoring**               | 🟡     | Scoring puro + confirmación/override + ranking en transacción existen. **Pendiente:** UI de super-admin y re-scoring por delta.                                                                      |
+| **6 — Pulido & deploy**                    | ⬜     | Fidelidad a prototipos, estados vacíos/skeletons, índices, deploy (web + api + CI).                                                                                                                  |
+| **7 — Opcional**                           | ⬜     | Web Push, grupos públicos, feed narrativo, puntos configurables, dark mode.                                                                                                                          |
 
 ---
 
 ## 6. Avance reciente (changelog)
 
 **2026-06-14 — Integración de autenticación y alineación de contrato front↔back**
+
 - **Cliente oficial Better Auth** en el front: `apps/web/src/lib/authClient.ts`
   (`createAuthClient` + `anonymousClient`).
 - **Login Google** vía `authClient.signIn.social` con `callbackURL` **absoluto** al origin de la web
@@ -135,7 +137,7 @@ Leyenda: ✅ HECHO · 🟡 PARCIAL · ⬜ PENDIENTE
 
 - **API de fútbol:** `apps/api/src/lib/footballApi.ts` es un stub; falta elegir proveedor
   (API-Football / football-data.org / TheSportsDB) + key, y la lógica real de `jobs/syncMatches.ts`
-  (incl. `externalId` en `tournaments`). *Bloquea Fase 3.*
+  (incl. `externalId` en `tournaments`). _Bloquea Fase 3._
 - **Re-scoring por delta** en override de resultado: `apps/api/src/modules/results/scoring.service.ts`
   (riesgo de doble conteo).
 - **JWT de token de dispositivo** para reingreso de menores: `apps/api/src/modules/users/users.service.ts`
