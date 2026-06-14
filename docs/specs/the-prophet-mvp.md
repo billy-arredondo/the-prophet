@@ -102,7 +102,7 @@ Leyenda: ✅ HECHO · 🟡 PARCIAL · ⬜ PENDIENTE
 | **0 — Fundación**                          | ✅     | Monorepo pnpm; `packages/shared` (tipos+Zod); API por módulos (auth/scoring/swagger/middlewares/job); web con router lazy, stores, hooks Query y 5 pantallas; `ci.yml` creado.                       |
 | **Integración contrato front↔back + auth** | ✅     | Cliente Better Auth, endpoints alineados y matches por estado; **verificado e2e** (2026-06-14): login Invitado y Google → `/groups`; `/api/me` clasifica guest (email null) OK; predictions/groups/matches responden; logout OK.                                                                |
 | **1 — Auth & usuarios**                    | 🟡     | Google + invitado verificados e2e. **Token de dispositivo** para menores (JWT + cookie + ruta `/join` + canje), **perfiles gestionados** (crear/listar + link/QR) y **editar perfil** hechos (2026-06-14). **Pendiente:** account linking invitado→Google (diferido). |
-| **2 — Grupos**                             | 🟡     | Endpoints completos (invite code, cap de 10, último-admin). **Pendiente:** probar e2e (invitación link+QR) y quitar mocks de UI.                                                                     |
+| **2 — Grupos**                             | ✅     | Grupos reales e2e: lista/crear/unirse, selección→detalle (ranking), invitación link/QR (copiar **código** y **enlace** por separado) y `/join` con `?next=` (preserva el código en el login). Mocks eliminados. Seed de torneo por defecto (`ensureDefaultTournament`).                                                                     |
 | **3 — Torneo & matches**                   | 🟡     | `GET /matches?status=` añadido. **Pendiente:** elegir e integrar API de fútbol, seed WC2026, job de sync real.                                                                                       |
 | **4 — Predicciones**                       | 🟡     | Upsert + kickoff lock en backend; UI con endpoints alineados. **Pendiente:** e2e y quitar mocks.                                                                                                     |
 | **5 — Resultados & scoring**               | 🟡     | Scoring puro + confirmación/override + ranking en transacción existen. **Pendiente:** UI de super-admin y re-scoring por delta.                                                                      |
@@ -143,6 +143,15 @@ Leyenda: ✅ HECHO · 🟡 PARCIAL · ⬜ PENDIENTE
 - **Fix:** miembros gestionados se crean con `_id` string explícito (Mixed `_id` no autogenera ni
   castea; antes 500 al crear y 404 en el access-link).
 - **Diferido:** account linking invitado→Google (migración de datos, sub-tarea aparte).
+
+**2026-06-14 — Fase 2: Grupos**
+
+- Mocks eliminados de `GroupsPage`/`RankingPage`; datos reales (`useGroups`/`useGroup`/`useRanking`).
+- Selección de grupo → `/rankings` (vista de detalle); `activeGroupId` persistido (zustand `persist`).
+- `InviteModal`: copiar **código** y copiar **enlace** ahora son acciones separadas.
+- `JoinPage` + `LoginPage`: `?next=` preserva el código de invitación a través del login; al unirse, navega al grupo.
+- `CreateGroupModal` usa el id real del torneo activo (`useTournaments`); backend `ensureDefaultTournament()` seedea WC2026 al arrancar (arregla el 500 por el `tournamentId` placeholder).
+- Login: hero con imagen real del balón + máscara radial para fundir el borde.
 
 > Nota operativa: Better Auth se inicializa **una sola vez al arrancar** (`server.ts`:
 > `connectDb → initAuth`). Si Mongo no está conectado al arranque, el auth queda sin adapter hasta
