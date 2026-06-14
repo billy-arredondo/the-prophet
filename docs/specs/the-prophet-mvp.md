@@ -101,7 +101,7 @@ Leyenda: ✅ HECHO · 🟡 PARCIAL · ⬜ PENDIENTE
 | ------------------------------------------ | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **0 — Fundación**                          | ✅     | Monorepo pnpm; `packages/shared` (tipos+Zod); API por módulos (auth/scoring/swagger/middlewares/job); web con router lazy, stores, hooks Query y 5 pantallas; `ci.yml` creado.                       |
 | **Integración contrato front↔back + auth** | ✅     | Cliente Better Auth, endpoints alineados y matches por estado; **verificado e2e** (2026-06-14): login Invitado y Google → `/groups`; `/api/me` clasifica guest (email null) OK; predictions/groups/matches responden; logout OK.                                                                |
-| **1 — Auth & usuarios**                    | 🟡     | Google + invitado **verificados e2e**; `requireAuth` espeja el `users` de dominio al primer login. **Pendiente:** JWT de token de dispositivo para menores, account linking, "editar perfil". |
+| **1 — Auth & usuarios**                    | 🟡     | Google + invitado verificados e2e. **Token de dispositivo** para menores (JWT + cookie + ruta `/join` + canje), **perfiles gestionados** (crear/listar + link/QR) y **editar perfil** hechos (2026-06-14). **Pendiente:** account linking invitado→Google (diferido). |
 | **2 — Grupos**                             | 🟡     | Endpoints completos (invite code, cap de 10, último-admin). **Pendiente:** probar e2e (invitación link+QR) y quitar mocks de UI.                                                                     |
 | **3 — Torneo & matches**                   | 🟡     | `GET /matches?status=` añadido. **Pendiente:** elegir e integrar API de fútbol, seed WC2026, job de sync real.                                                                                       |
 | **4 — Predicciones**                       | 🟡     | Upsert + kickoff lock en backend; UI con endpoints alineados. **Pendiente:** e2e y quitar mocks.                                                                                                     |
@@ -130,6 +130,19 @@ Leyenda: ✅ HECHO · 🟡 PARCIAL · ⬜ PENDIENTE
   (`sign-in/anonymous`) crea sesión y `/api/me` devuelve `provider:"guest"` con `email:null`;
   `predictions`/`groups`/`matches` responden 200; `?status=` inválido → 400; `sign-out` → 401.
   En navegador: Invitado y Google entran a `/groups` con sesión.
+
+**2026-06-14 — Fase 1: Auth & usuarios (items 1-3)**
+
+- **Token de dispositivo para menores:** `lib/deviceToken.ts` firma/verifica JWT con
+  `DEVICE_TOKEN_SECRET`; módulo `device` (`POST /api/device/session` setea cookie HttpOnly ~90d,
+  `POST /api/device/logout`); `requireAuth` acepta la cookie de dispositivo antes de Better Auth;
+  el access-link ahora es un JWT (`/join?token=`). Front: ruta pública `/join` (`JoinPage`) canjea
+  `?token=` (reingreso de menor) y maneja `?code=` (unirse a grupo).
+- **Perfiles gestionados:** `GET /api/me/managed-members`; UI lista real + QR/enlace al crear.
+- **Editar perfil:** modal en ProfilePage → `PATCH /api/me`.
+- **Fix:** miembros gestionados se crean con `_id` string explícito (Mixed `_id` no autogenera ni
+  castea; antes 500 al crear y 404 en el access-link).
+- **Diferido:** account linking invitado→Google (migración de datos, sub-tarea aparte).
 
 > Nota operativa: Better Auth se inicializa **una sola vez al arrancar** (`server.ts`:
 > `connectDb → initAuth`). Si Mongo no está conectado al arranque, el auth queda sin adapter hasta
