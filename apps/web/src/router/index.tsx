@@ -13,7 +13,7 @@ const ProfilePage = lazy(() => import('@/features/profile/ProfilePage'));
 function LoadingFallback() {
   return (
     <div className="flex-1 flex items-center justify-center min-h-[50vh]">
-      <span className="material-symbols-outlined text-(--color-stadium-green-light) animate-spin text-4xl">
+      <span className="material-symbols-outlined text-stadium-green-light animate-spin text-4xl">
         sports_soccer
       </span>
     </div>
