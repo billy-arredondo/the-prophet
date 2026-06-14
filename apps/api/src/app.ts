@@ -60,20 +60,15 @@ export function createApp() {
   });
 
   // ── Better Auth handler ────────────────────────────────────────────────────
-  // Better Auth's toNodeHandler is a full request handler for all /api/auth/* routes.
-  // Using express.Router sub-mount so the wildcard works correctly in Express 4.
-  const authRouter = express.Router();
-  authRouter.use(authLimiter);
-  authRouter.all('*', (req, res, next) => {
+  // Must use app.all() (not app.use()) so Express does NOT strip the /api/auth
+  // prefix from req.url — Better Auth needs the full path to match its routes.
+  app.all('/api/auth/*', authLimiter, (req, res) => {
     try {
-      const handler = toNodeHandler(getAuth());
-      return handler(req, res);
+      return toNodeHandler(getAuth())(req, res);
     } catch {
-      // Auth not initialised (no DB) — return 503
       res.status(503).json({ error: { code: 'AUTH_UNAVAILABLE', message: 'Auth service not ready' } });
     }
   });
-  app.use('/api/auth', authRouter);
 
   // ── API routers ────────────────────────────────────────────────────────────
   app.use('/api', apiLimiter, usersRouter);

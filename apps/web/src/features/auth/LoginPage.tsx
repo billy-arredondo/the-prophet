@@ -26,9 +26,28 @@ export default function LoginPage() {
     }
   }, [isAuthenticated, isLoading, navigate]);
 
-  function handleGoogleLogin() {
-    // Redirect to API OAuth endpoint — Better Auth handles the flow
-    window.location.href = `${API_URL}/api/auth/google`;
+  async function handleGoogleLogin() {
+    try {
+      // Better Auth requires POST to /sign-in/social; disableRedirect returns
+      // the Google auth URL as JSON so we can navigate manually (avoids CORS
+      // redirect issues when fetch follows a cross-origin 302).
+      const res = await fetch(`${API_URL}/api/auth/sign-in/social`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          provider: 'google',
+          callbackURL: '/groups',
+          disableRedirect: true,
+        }),
+      });
+      const data = (await res.json()) as { url?: string };
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      console.error('[login] Google sign-in failed:', err);
+    }
   }
 
   function handleGuestLogin() {
