@@ -12,9 +12,8 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { api } from '@/lib/api';
+import { authClient } from '@/lib/authClient';
 import { createManagedMemberSchema } from '@the-prophet/shared';
-
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000';
 
 function initials(name: string) {
   return name
@@ -46,7 +45,7 @@ function AddManagedMemberModal({
     }
     setLoading(true);
     try {
-      await api.post('/api/users/managed', parsed.data);
+      await api.post('/api/me/managed-members', parsed.data);
       onClose();
     } catch {
       setError('No se pudo agregar el miembro. Intenta de nuevo.');
@@ -90,9 +89,12 @@ export default function ProfilePage() {
   const { user, logout } = useAuthStore();
   const [showAddMember, setShowAddMember] = useState(false);
 
-  function handleLogout() {
-    fetch(`${API_URL}/api/auth/logout`, { method: 'POST', credentials: 'include' })
-      .finally(() => logout());
+  async function handleLogout() {
+    try {
+      await authClient.signOut();
+    } finally {
+      logout();
+    }
   }
 
   if (!user) return null;

@@ -19,6 +19,7 @@
     "@radix-ui/react-toast": "^1.2.14",
     "@tanstack/react-query": "^5.80.7",
     "@the-prophet/shared": "workspace:*",
+    "better-auth": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "qrcode.react": "^4.2.0",

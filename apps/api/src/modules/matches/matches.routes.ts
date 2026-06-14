@@ -9,6 +9,9 @@ router.use(requireAuth);
 // GET /tournaments/:id/matches
 router.get('/tournaments/:id/matches', ctrl.getMatchesByTournament);
 
+// GET /matches?status=&tournamentId=
+router.get('/matches', ctrl.getMatches);
+
 // GET /matches/:id
 router.get('/matches/:id', ctrl.getMatch);
 

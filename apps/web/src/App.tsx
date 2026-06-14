@@ -8,21 +8,22 @@ import { api } from './lib/api';
 import type { User } from '@the-prophet/shared';
 
 /**
- * Restore session on mount by hitting /api/auth/me.
- * This is the only place we hydrate authStore from the server — advanced-init-once pattern.
+ * Restore session on mount by hitting /api/me — returns our domain User when a
+ * valid Better Auth session cookie is present (401 otherwise). This is the only
+ * place we hydrate authStore from the server — advanced-init-once pattern.
  */
 function SessionRestorer() {
-  const { setUser, setLoading } = useAuthStore();
+  const setUser = useAuthStore((s) => s.setUser);
 
   useEffect(() => {
     const controller = new AbortController();
     api
-      .get<User>('/api/auth/me', controller.signal)
+      .get<User>('/api/me', controller.signal)
       .then((user) => setUser(user))
       .catch(() => setUser(null));
 
     return () => controller.abort();
-  }, [setUser, setLoading]);
+  }, [setUser]);
 
   return null;
 }

@@ -33,17 +33,19 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
     let user = await UserModel.findOne({ _id: session.user.id }).lean(false);
 
     if (!user) {
-      // First login via Better Auth — create mirror document
-      const isSuperAdmin = session.user.email
-        ? env.SUPER_ADMIN_EMAILS.includes(session.user.email)
-        : false;
+      // First login via Better Auth — create mirror document.
+      // The anonymous plugin sets isAnonymous and a generated email, so classify
+      // the provider by isAnonymous (not email presence) and null the guest email.
+      const isAnonymous = Boolean((session.user as { isAnonymous?: boolean }).isAnonymous);
+      const email = isAnonymous ? null : (session.user.email ?? null);
+      const isSuperAdmin = email ? env.SUPER_ADMIN_EMAILS.includes(email) : false;
 
       user = await UserModel.create({
         _id: session.user.id,
         displayName: session.user.name ?? 'User',
-        email: session.user.email ?? null,
+        email,
         photoURL: session.user.image ?? null,
-        provider: session.user.email ? 'google' : 'guest',
+        provider: isAnonymous ? 'guest' : 'google',
         managedBy: null,
         isSuperAdmin,
       });

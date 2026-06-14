@@ -13,14 +13,14 @@ export const predictionKeys = {
 export function useMyPredictions() {
   return useQuery({
     queryKey: predictionKeys.mine(),
-    queryFn: ({ signal }) => api.get<Prediction[]>('/api/predictions/me', signal),
+    queryFn: ({ signal }) => api.get<Prediction[]>('/api/me/predictions', signal),
   });
 }
 
 export function useUpsertPrediction(matchId: string) {
   return useMutation({
     mutationFn: (data: UpsertPredictionInput) =>
-      api.put<Prediction>(`/api/predictions/${matchId}`, data),
+      api.put<Prediction>(`/api/matches/${matchId}/prediction`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: predictionKeys.mine() });
       queryClient.invalidateQueries({ queryKey: predictionKeys.byMatch(matchId) });

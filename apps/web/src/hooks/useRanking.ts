@@ -11,7 +11,7 @@ export function useRanking(groupId: string) {
   return useQuery({
     queryKey: rankingKeys.byGroup(groupId),
     queryFn: ({ signal }) =>
-      api.get<RankingEntry[]>(`/api/groups/${groupId}/rankings`, signal),
+      api.get<RankingEntry[]>(`/api/groups/${groupId}/ranking`, signal),
     enabled: Boolean(groupId),
     staleTime: 2 * 60 * 1000, // Rankings update less often
   });

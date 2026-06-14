@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
+import { authClient } from '@/lib/authClient';
+import { api } from '@/lib/api';
 import { MaterialIcon } from '@/components/ui/MaterialIcon';
-
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000';
+import type { User } from '@the-prophet/shared';
 
 function ConfettiOrb({
   className,
@@ -27,41 +28,33 @@ export default function LoginPage() {
   }, [isAuthenticated, isLoading, navigate]);
 
   async function handleGoogleLogin() {
-    try {
-      // Better Auth requires POST to /sign-in/social; disableRedirect returns
-      // the Google auth URL as JSON so we can navigate manually (avoids CORS
-      // redirect issues when fetch follows a cross-origin 302).
-      const res = await fetch(`${API_URL}/api/auth/sign-in/social`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          provider: 'google',
-          callbackURL: '/groups',
-          disableRedirect: true,
-        }),
-      });
-      const data = (await res.json()) as { url?: string };
-      if (data.url) {
-        window.location.href = data.url;
-      }
-    } catch (err) {
-      console.error('[login] Google sign-in failed:', err);
+    // The Better Auth client redirects the browser to Google and, after the
+    // callback, back to callbackURL. callbackURL must be an absolute URL on the
+    // WEB origin — a relative path would resolve against the API base URL.
+    const { error } = await authClient.signIn.social({
+      provider: 'google',
+      callbackURL: `${window.location.origin}/groups`,
+    });
+    if (error) {
+      console.error('[login] Google sign-in failed:', error);
     }
   }
 
-  function handleGuestLogin() {
-    // POST to guest endpoint
-    fetch(`${API_URL}/api/auth/guest`, {
-      method: 'POST',
-      credentials: 'include',
-    })
-      .then((r) => r.json())
-      .then((user) => {
-        useAuthStore.getState().setUser(user);
-        navigate('/groups', { replace: true });
-      })
-      .catch(console.error);
+  async function handleGuestLogin() {
+    const { error } = await authClient.signIn.anonymous();
+    if (error) {
+      console.error('[login] guest sign-in failed:', error);
+      return;
+    }
+    // requireAuth auto-creates our domain user on the first authenticated call;
+    // GET /api/me returns it (with provider/isSuperAdmin/managedBy).
+    try {
+      const user = await api.get<User>('/api/me');
+      useAuthStore.getState().setUser(user);
+      navigate('/groups', { replace: true });
+    } catch (err) {
+      console.error('[login] profile fetch failed:', err);
+    }
   }
 
   return (

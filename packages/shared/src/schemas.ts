@@ -5,6 +5,13 @@ import { MAX_GOALS, MIN_GOALS } from './constants';
 export const matchStageSchema = z.enum(['group', 'r16', 'qf', 'sf', 'final', 'third_place']);
 export const matchStatusSchema = z.enum(['upcoming', 'live', 'finished']);
 
+/** Query params for GET /api/matches (list, optionally filtered). */
+export const matchListQuerySchema = z.object({
+  status: matchStatusSchema.optional(),
+  tournamentId: z.string().min(1).optional(),
+});
+export type MatchListQuery = z.infer<typeof matchListQuerySchema>;
+
 const goals = z.number().int().min(MIN_GOALS).max(MAX_GOALS);
 const displayName = z.string().trim().min(1).max(40);
 
