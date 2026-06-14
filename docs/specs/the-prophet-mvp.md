@@ -100,8 +100,8 @@ Leyenda: ✅ HECHO · 🟡 PARCIAL · ⬜ PENDIENTE
 | Fase                                       | Estado | Detalle                                                                                                                                                                                              |
 | ------------------------------------------ | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **0 — Fundación**                          | ✅     | Monorepo pnpm; `packages/shared` (tipos+Zod); API por módulos (auth/scoring/swagger/middlewares/job); web con router lazy, stores, hooks Query y 5 pantallas; `ci.yml` creado.                       |
-| **Integración contrato front↔back + auth** | 🟡     | Cliente Better Auth, endpoints alineados y endpoint de matches por estado **hechos**; falta **verificación e2e** con Mongo conectado.                                                                |
-| **1 — Auth & usuarios**                    | 🟡     | Google + invitado vía Better Auth operativos; `requireAuth` espeja el `users` de dominio al primer login. **Pendiente:** JWT de token de dispositivo para menores, account linking, "editar perfil". |
+| **Integración contrato front↔back + auth** | ✅     | Cliente Better Auth, endpoints alineados y matches por estado; **verificado e2e** (2026-06-14): login Invitado y Google → `/groups`; `/api/me` clasifica guest (email null) OK; predictions/groups/matches responden; logout OK.                                                                |
+| **1 — Auth & usuarios**                    | 🟡     | Google + invitado **verificados e2e**; `requireAuth` espeja el `users` de dominio al primer login. **Pendiente:** JWT de token de dispositivo para menores, account linking, "editar perfil". |
 | **2 — Grupos**                             | 🟡     | Endpoints completos (invite code, cap de 10, último-admin). **Pendiente:** probar e2e (invitación link+QR) y quitar mocks de UI.                                                                     |
 | **3 — Torneo & matches**                   | 🟡     | `GET /matches?status=` añadido. **Pendiente:** elegir e integrar API de fútbol, seed WC2026, job de sync real.                                                                                       |
 | **4 — Predicciones**                       | 🟡     | Upsert + kickoff lock en backend; UI con endpoints alineados. **Pendiente:** e2e y quitar mocks.                                                                                                     |
@@ -126,6 +126,10 @@ Leyenda: ✅ HECHO · 🟡 PARCIAL · ⬜ PENDIENTE
 - **Backend:** `requireAuth` clasifica el `provider` por `isAnonymous` (no por email) para no marcar
   invitados como Google; nuevo `GET /api/matches?status=&tournamentId=` (+ `matchListQuerySchema` en
   `shared`) para los tabs Próximos/En Vivo/Finalizados.
+- **Verificado e2e (2026-06-14):** `/api/me` sin sesión → 401; login Invitado
+  (`sign-in/anonymous`) crea sesión y `/api/me` devuelve `provider:"guest"` con `email:null`;
+  `predictions`/`groups`/`matches` responden 200; `?status=` inválido → 400; `sign-out` → 401.
+  En navegador: Invitado y Google entran a `/groups` con sesión.
 
 > Nota operativa: Better Auth se inicializa **una sola vez al arrancar** (`server.ts`:
 > `connectDb → initAuth`). Si Mongo no está conectado al arranque, el auth queda sin adapter hasta
