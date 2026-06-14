@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { Group } from '@the-prophet/shared';
 import { useGroups } from '@/hooks/useGroups';
 import { useUiStore } from '@/stores/uiStore';
@@ -6,57 +7,22 @@ import { MaterialIcon } from '@/components/ui/MaterialIcon';
 import { CreateGroupModal } from './CreateGroupModal';
 import { JoinGroupModal } from './JoinGroupModal';
 
-// ---- Mock data (clearly isolated, swappable with real API data) ----
-const MOCK_GROUPS: Group[] = [
-  {
-    id: '1',
-    name: 'Los García',
-    description: 'La familia completa',
-    tournamentId: 'wc2026',
-    createdBy: 'user1',
-    adminIds: ['user1'],
-    memberIds: Array.from({ length: 12 }, (_, i) => `u${i}`),
-    inviteCode: 'GARCIA26',
-    visibility: 'private',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: '2',
-    name: 'Oficina Mundialista',
-    description: 'El equipo de trabajo',
-    tournamentId: 'wc2026',
-    createdBy: 'user2',
-    adminIds: ['user2'],
-    memberIds: Array.from({ length: 45 }, (_, i) => `u${i}`),
-    inviteCode: 'OFICINA6',
-    visibility: 'private',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: '3',
-    name: 'Los Pibes de Siempre',
-    description: 'Los amigos del barrio',
-    tournamentId: 'wc2026',
-    createdBy: 'user3',
-    adminIds: ['user3'],
-    memberIds: Array.from({ length: 10 }, (_, i) => `u${i}`),
-    inviteCode: 'PIBES226',
-    visibility: 'private',
-    createdAt: new Date().toISOString(),
-  },
-];
-
-function GroupCard({ group }: { group: Group }) {
+function GroupCard({ group, navigate }: { group: Group; navigate: ReturnType<typeof useNavigate> }) {
   const setActiveGroup = useUiStore((s) => s.setActiveGroupId);
   const memberCount = group.memberIds.length;
+
+  function handleSelect() {
+    setActiveGroup(group.id);
+    navigate('/rankings');
+  }
 
   return (
     <div
       className="bento-card bg-white rounded-xl p-4 shadow-[0px_4px_12px_rgba(0,0,0,0.05)] border border-(--color-outline-variant)/30 flex flex-col gap-3 relative overflow-hidden cursor-pointer"
-      onClick={() => setActiveGroup(group.id)}
+      onClick={handleSelect}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => e.key === 'Enter' && setActiveGroup(group.id)}
+      onKeyDown={(e) => e.key === 'Enter' && handleSelect()}
     >
       {/* Header */}
       <div className="flex items-center gap-4">
@@ -84,7 +50,7 @@ function GroupCard({ group }: { group: Group }) {
           className="bg-(--color-stadium-green-light)/10 text-(--color-stadium-green-light) font-bold text-sm px-4 py-2 rounded-lg hover:bg-(--color-stadium-green-light) hover:text-white transition-colors"
           onClick={(e) => {
             e.stopPropagation();
-            setActiveGroup(group.id);
+            handleSelect();
           }}
         >
           Ver Grupo
@@ -163,10 +129,10 @@ function EmptyState({
 export default function GroupsPage() {
   const [showCreate, setShowCreate] = useState(false);
   const [showJoin, setShowJoin] = useState(false);
+  const navigate = useNavigate();
 
-  // Try real API; fall back to mock while backend is offline
-  const { data, isLoading, isError } = useGroups();
-  const groups = (isError || !data) ? MOCK_GROUPS : data;
+  const { data, isLoading } = useGroups();
+  const groups = data ?? [];
 
   return (
     <div className="mt-6">
@@ -190,16 +156,15 @@ export default function GroupsPage() {
       {/* Group list */}
       {isLoading ? (
         <GroupsSkeleton />
+      ) : groups.length === 0 ? (
+        <EmptyState onJoin={() => setShowJoin(true)} onCreate={() => setShowCreate(true)} />
       ) : (
         <div className="grid grid-cols-1 gap-4">
           {groups.map((g) => (
-            <GroupCard key={g.id} group={g} />
+            <GroupCard key={g.id} group={g} navigate={navigate} />
           ))}
         </div>
       )}
-
-      {/* Empty / Join+Create CTA */}
-      <EmptyState onJoin={() => setShowJoin(true)} onCreate={() => setShowCreate(true)} />
 
       {/* Modals */}
       <CreateGroupModal open={showCreate} onClose={() => setShowCreate(false)} />

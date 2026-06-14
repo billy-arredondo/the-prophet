@@ -16,14 +16,22 @@ interface Props {
 }
 
 export function InviteModal({ open, onClose, groupName, inviteCode }: Props) {
-  const [copied, setCopied] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   const inviteLink = `${window.location.origin}/join?code=${inviteCode}`;
 
-  function handleCopy() {
+  function copyCode() {
+    navigator.clipboard.writeText(inviteCode).then(() => {
+      setCopiedCode(true);
+      setTimeout(() => setCopiedCode(false), 2000);
+    });
+  }
+
+  function copyLink() {
     navigator.clipboard.writeText(inviteLink).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
     });
   }
 
@@ -50,22 +58,22 @@ export function InviteModal({ open, onClose, groupName, inviteCode }: Props) {
                 {inviteCode}
               </span>
               <button
-                onClick={handleCopy}
+                onClick={copyCode}
                 className="p-2 rounded-lg hover:bg-(--color-surface-container) transition-colors text-(--color-stadium-green-light)"
                 aria-label="Copiar código"
               >
-                <MaterialIcon icon={copied ? 'check' : 'content_copy'} />
+                <MaterialIcon icon={copiedCode ? 'check' : 'content_copy'} />
               </button>
             </div>
           </div>
 
           {/* Share link */}
           <button
-            onClick={handleCopy}
+            onClick={copyLink}
             className="w-full h-12 bg-(--color-stadium-green-light) text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-(--color-stadium-green-dark) transition-all"
           >
-            <MaterialIcon icon={copied ? 'check' : 'share'} />
-            {copied ? '¡Copiado!' : 'Copiar enlace de invitación'}
+            <MaterialIcon icon={copiedLink ? 'check' : 'share'} />
+            {copiedLink ? '¡Copiado!' : 'Copiar enlace de invitación'}
           </button>
         </div>
       </DialogContent>

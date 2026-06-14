@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
+import { useUiStore } from '@/stores/uiStore';
 import { useJoinGroup } from '@/hooks/useGroups';
 import { MaterialIcon } from '@/components/ui/MaterialIcon';
 import type { User } from '@the-prophet/shared';
@@ -43,12 +44,16 @@ export default function JoinPage() {
     if (token || !code || isLoading || ran.current) return;
     ran.current = true;
     if (!isAuthenticated) {
-      navigate('/login', { replace: true });
+      // Preserve the invite so the user lands back here after logging in.
+      navigate(`/login?next=${encodeURIComponent(`/join?code=${code}`)}`, { replace: true });
       return;
     }
     joinGroup
       .mutateAsync({ inviteCode: code })
-      .then(() => navigate('/groups', { replace: true }))
+      .then((group) => {
+        useUiStore.getState().setActiveGroupId(group.id);
+        navigate('/rankings', { replace: true });
+      })
       .catch(() => setError('No se pudo unir al grupo. El código puede ser inválido.'));
   }, [token, code, isAuthenticated, isLoading, navigate, joinGroup]);
 

@@ -1,5 +1,6 @@
 import { createGroupSchema } from '@the-prophet/shared';
 import { useCreateGroup } from '@/hooks/useGroups';
+import { useActiveTournament } from '@/hooks/useTournaments';
 import {
   Dialog,
   DialogContent,
@@ -20,9 +21,11 @@ interface Props {
 
 export function CreateGroupModal({ open, onClose }: Props) {
   const createGroup = useCreateGroup();
+  const activeTournament = useActiveTournament();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!activeTournament) return;
     const form = new FormData(e.currentTarget);
     const name = String(form.get('name') ?? '').trim();
     const description = String(form.get('description') ?? '').trim();
@@ -32,7 +35,7 @@ export function CreateGroupModal({ open, onClose }: Props) {
     const parsed = createGroupSchema.safeParse({
       name,
       description,
-      tournamentId: 'wc2026',
+      tournamentId: activeTournament.id,
     });
     if (!parsed.success) return;
 
@@ -80,7 +83,11 @@ export function CreateGroupModal({ open, onClose }: Props) {
             <Button type="button" variant="outline" className="flex-1" onClick={onClose}>
               Cancelar
             </Button>
-            <Button type="submit" className="flex-1" disabled={createGroup.isPending}>
+            <Button
+              type="submit"
+              className="flex-1"
+              disabled={createGroup.isPending || !activeTournament}
+            >
               {createGroup.isPending ? 'Creando...' : 'Crear Grupo'}
             </Button>
           </div>

@@ -1,29 +1,14 @@
 import { useState } from 'react';
-import type { RankingEntry } from '@the-prophet/shared';
+import { useNavigate } from 'react-router-dom';
 import { useRanking } from '@/hooks/useRanking';
+import { useGroup } from '@/hooks/useGroups';
 import { useUiStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
 import { MaterialIcon } from '@/components/ui/MaterialIcon';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { InviteModal } from '@/features/groups/InviteModal';
 import { cn } from '@/lib/utils';
-
-// ---- Mock data ----
-const MOCK_RANKING: RankingEntry[] = [
-  { id: 'r1', groupId: '1', userId: 'u1', displayName: 'Juan García',  photoURL: null, totalPoints: 124, predictionsCount: 15, lastUpdated: new Date().toISOString() },
-  { id: 'r2', groupId: '1', userId: 'u2', displayName: 'Elena M.',     photoURL: null, totalPoints: 112, predictionsCount: 14, lastUpdated: new Date().toISOString() },
-  { id: 'r3', groupId: '1', userId: 'u3', displayName: 'Carlos R.',    photoURL: null, totalPoints: 98,  predictionsCount: 13, lastUpdated: new Date().toISOString() },
-  { id: 'r4', groupId: '1', userId: 'me', displayName: 'Tú (Diego)',   photoURL: null, totalPoints: 92,  predictionsCount: 12, lastUpdated: new Date().toISOString() },
-  { id: 'r5', groupId: '1', userId: 'u5', displayName: 'Sofia L.',     photoURL: null, totalPoints: 87,  predictionsCount: 11, lastUpdated: new Date().toISOString() },
-  { id: 'r6', groupId: '1', userId: 'u6', displayName: 'Marco P.',     photoURL: null, totalPoints: 79,  predictionsCount: 10, lastUpdated: new Date().toISOString() },
-];
-
-const MOCK_GROUP = {
-  id: '1',
-  name: 'Los García',
-  memberCount: 12,
-  inviteCode: 'GARCIA26',
-};
+import type { RankingEntry } from '@the-prophet/shared';
 
 function getMedalColor(rank: number) {
   if (rank === 1) return 'text-(--color-secondary-container)'; // gold
@@ -154,21 +139,40 @@ function RankingSkeleton() {
 export default function RankingPage() {
   const [showInvite, setShowInvite] = useState(false);
   const [copied, setCopied] = useState(false);
+  const navigate = useNavigate();
 
-  const activeGroupId = useUiStore((s) => s.activeGroupId) ?? '1';
+  const activeGroupId = useUiStore((s) => s.activeGroupId);
   const currentUserId = useAuthStore((s) => s.user?.id);
 
-  const { data, isLoading, isError } = useRanking(activeGroupId);
-  const entries = (isError || !data) ? MOCK_RANKING : data;
+  const { data: group } = useGroup(activeGroupId ?? '');
+  const { data, isLoading } = useRanking(activeGroupId ?? '');
+  const entries = data ?? [];
+
+  if (!activeGroupId) {
+    return (
+      <div className="mt-6 flex flex-col items-center justify-center gap-6 py-16">
+        <MaterialIcon icon="groups" className="text-[64px] text-(--color-outline)" />
+        <p className="text-xl font-semibold text-(--color-on-surface-variant)">
+          Elige un grupo para ver la clasificación
+        </p>
+        <button
+          onClick={() => navigate('/groups')}
+          className="h-12 px-8 bg-(--color-stadium-green-light) text-white rounded-xl font-bold shadow-lg hover:bg-(--color-stadium-green-dark) transition-all active:scale-95"
+        >
+          Ir a Grupos
+        </button>
+      </div>
+    );
+  }
 
   // Displayed entries: top 5 + current user if outside top 5
   const top5 = entries.slice(0, 5);
-  const meEntry = entries.find((e) => e.userId === (currentUserId ?? 'me'));
-  const meRank = entries.findIndex((e) => e.userId === (currentUserId ?? 'me')) + 1;
-  const showMeSeparately = meRank > 5 && meEntry;
+  const meEntry = entries.find((e) => e.userId === currentUserId);
+  const meRank = entries.findIndex((e) => e.userId === currentUserId) + 1;
+  const showMeSeparately = meRank > 5 && meEntry != null;
 
   function handleCopyCode() {
-    navigator.clipboard.writeText(MOCK_GROUP.inviteCode).then(() => {
+    navigator.clipboard.writeText(group?.inviteCode ?? '').then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
@@ -185,10 +189,10 @@ export default function RankingPage() {
               <span className="text-xs font-bold text-(--color-stadium-green-light) mb-1 block uppercase tracking-wider">
                 GRUPO ACTUAL
               </span>
-              <h2 className="text-2xl font-bold text-(--color-on-surface)">{MOCK_GROUP.name}</h2>
+              <h2 className="text-2xl font-bold text-(--color-on-surface)">{group?.name}</h2>
               <div className="flex items-center gap-2 mt-1 text-(--color-on-surface-variant)">
                 <MaterialIcon icon="groups" size={18} />
-                <span className="text-base">{MOCK_GROUP.memberCount} participantes</span>
+                <span className="text-base">{group?.memberIds.length ?? 0} participantes</span>
               </div>
             </div>
 
@@ -199,7 +203,7 @@ export default function RankingPage() {
               </span>
               <div className="flex items-center justify-between">
                 <span className="font-mono font-bold text-lg tracking-widest text-(--color-primary)">
-                  {MOCK_GROUP.inviteCode}
+                  {group?.inviteCode ?? ''}
                 </span>
                 <button
                   onClick={handleCopyCode}
@@ -225,6 +229,11 @@ export default function RankingPage() {
           <div className="p-4">
             <RankingSkeleton />
           </div>
+        ) : entries.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 gap-3">
+            <MaterialIcon icon="leaderboard" className="text-[48px] text-(--color-outline)" />
+            <p className="text-base text-(--color-on-surface-variant)">Aún no hay puntajes</p>
+          </div>
         ) : (
           <div className="divide-y divide-(--color-surface-container-low)">
             {top5.map((entry, i) => (
@@ -232,7 +241,7 @@ export default function RankingPage() {
                 key={entry.id}
                 entry={entry}
                 rank={i + 1}
-                isMe={entry.userId === (currentUserId ?? 'me')}
+                isMe={entry.userId === currentUserId}
               />
             ))}
 
@@ -270,8 +279,8 @@ export default function RankingPage() {
       <InviteModal
         open={showInvite}
         onClose={() => setShowInvite(false)}
-        groupName={MOCK_GROUP.name}
-        inviteCode={MOCK_GROUP.inviteCode}
+        groupName={group?.name ?? ''}
+        inviteCode={group?.inviteCode ?? ''}
       />
     </div>
   );

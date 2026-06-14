@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
 import { authClient } from '@/lib/authClient';
 import { api } from '@/lib/api';
@@ -18,14 +18,18 @@ function ConfettiOrb({
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const { isAuthenticated, isLoading } = useAuthStore();
 
-  // If already logged in, go straight to groups
+  // Where to go after login — preserves invite links like /join?code=… (?next=)
+  const next = params.get('next') || '/groups';
+
+  // If already logged in, go straight to the destination
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      navigate('/groups', { replace: true });
+      navigate(next, { replace: true });
     }
-  }, [isAuthenticated, isLoading, navigate]);
+  }, [isAuthenticated, isLoading, navigate, next]);
 
   async function handleGoogleLogin() {
     // The Better Auth client redirects the browser to Google and, after the
@@ -33,7 +37,7 @@ export default function LoginPage() {
     // WEB origin — a relative path would resolve against the API base URL.
     const { error } = await authClient.signIn.social({
       provider: 'google',
-      callbackURL: `${window.location.origin}/groups`,
+      callbackURL: `${window.location.origin}${next}`,
     });
     if (error) {
       console.error('[login] Google sign-in failed:', error);
@@ -51,7 +55,7 @@ export default function LoginPage() {
     try {
       const user = await api.get<User>('/api/me');
       useAuthStore.getState().setUser(user);
-      navigate('/groups', { replace: true });
+      navigate(next, { replace: true });
     } catch (err) {
       console.error('[login] profile fetch failed:', err);
     }
@@ -92,34 +96,19 @@ export default function LoginPage() {
 
         {/* Hero */}
         <div className="w-full flex flex-col items-center mb-8">
-          <div className="relative w-64 h-64 md:w-80 md:h-80 mb-6">
-            {/* Glow */}
-            <div className="absolute inset-0 bg-stadium-green-light opacity-10 blur-3xl rounded-full" />
-            {/* Floating ball */}
-            <div className="relative z-10 w-full h-full flex items-center justify-center">
-              <div className="animate-float relative">
-                {/* Placeholder soccer ball SVG */}
-                <div className="w-56 h-56 md:w-72 md:h-72 rounded-full bg-linear-to-br from-stadium-green-light to-stadium-green-dark shadow-2xl border-4 border-white flex items-center justify-center">
-                  <MaterialIcon
-                    icon="sports_soccer"
-                    size={100}
-                    className="text-white animate-spin [animation-duration:4s]"
-                  />
-                </div>
-                {/* Trophy badge */}
-                <div className="absolute -top-4 -right-4 bg-secondary-container p-3 rounded-full shadow-lg border-2 border-white">
-                  <MaterialIcon
-                    icon="emoji_events"
-                    filled
-                    className="text-on-secondary-container"
-                  />
-                </div>
-                {/* Group badge */}
-                <div className="absolute -bottom-2 -left-2 bg-action-blue p-3 rounded-full shadow-lg border-2 border-white">
-                  <MaterialIcon icon="group" filled className="text-white" />
-                </div>
-              </div>
-            </div>
+          {/* Hero image: centered ball + trophy/contacts badges. A radial mask
+              fades the outer edge to transparent so it blends into the page
+              background instead of showing a square margin. */}
+          <div className="relative w-72 h-72 md:w-96 md:h-96 mb-6 animate-float">
+            <img
+              src="/hero-ball.png"
+              alt="Balón de fútbol en el estadio"
+              className="w-full h-full object-contain"
+              style={{
+                WebkitMaskImage: 'radial-gradient(circle at center, #000 78%, transparent 100%)',
+                maskImage: 'radial-gradient(circle at center, #000 78%, transparent 100%)',
+              }}
+            />
           </div>
 
           {/* Headline */}
