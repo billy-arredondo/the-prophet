@@ -27,8 +27,7 @@ async function syncAllActiveTournaments(): Promise<void> {
     const tournaments = await TournamentModel.find({ status: 'active' });
 
     for (const tournament of tournaments) {
-      // TODO: store externalId on tournament document
-      const externalTournamentId = String((tournament as unknown as Record<string, unknown>)['externalId'] ?? '');
+      const externalTournamentId = tournament.externalId ?? '';
       if (!externalTournamentId) continue;
 
       const fixtures = await client.getFixtures(externalTournamentId, tournament.year);
@@ -69,12 +68,12 @@ export function startSyncJob(): void {
     return;
   }
 
-  // Run every 2 minutes
-  cron.schedule('*/2 * * * *', () => {
+  // Run every 5 minutes (stays well under football-data.org's ~10 req/min free tier).
+  cron.schedule('*/5 * * * *', () => {
     void syncAllActiveTournaments();
   });
 
-  console.info('[syncMatches] Match sync job started (every 2 minutes)');
+  console.info('[syncMatches] Match sync job started (every 5 minutes)');
 
   // Run immediately on startup
   void syncAllActiveTournaments();

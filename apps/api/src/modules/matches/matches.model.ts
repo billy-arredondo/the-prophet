@@ -22,7 +22,7 @@ const matchSchema = new Schema<IMatchDocument>({
   externalId: { type: String, default: null },
   stage: {
     type: String,
-    enum: ['group', 'r16', 'qf', 'sf', 'final', 'third_place'],
+    enum: ['group', 'r32', 'r16', 'qf', 'sf', 'final', 'third_place'],
     required: true,
   },
   groupStage: { type: String, default: null },

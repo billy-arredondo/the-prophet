@@ -5,7 +5,7 @@
  */
 
 export type AuthProvider = 'google' | 'guest';
-export type MatchStage = 'group' | 'r16' | 'qf' | 'sf' | 'final' | 'third_place';
+export type MatchStage = 'group' | 'r32' | 'r16' | 'qf' | 'sf' | 'final' | 'third_place';
 export type MatchStatus = 'upcoming' | 'live' | 'finished';
 export type ResultSource = 'api' | 'manual';
 /** Only 'private' in the MVP; 'public' reserved for a later phase. */
@@ -31,6 +31,8 @@ export interface Tournament {
   name: string;
   year: number;
   status: TournamentStatus;
+  /** Id/code from the external football API (e.g. football-data.org 'WC'). */
+  externalId: string | null;
 }
 
 export interface Group {

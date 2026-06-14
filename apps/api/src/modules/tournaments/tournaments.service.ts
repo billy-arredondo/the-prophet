@@ -12,8 +12,20 @@ export async function listTournaments(): Promise<ITournamentDocument[]> {
  */
 export async function ensureDefaultTournament(): Promise<ITournamentDocument> {
   const existing = await TournamentModel.findOne({ year: 2026 });
-  if (existing) return existing;
-  return TournamentModel.create({ name: 'Mundial 2026', year: 2026, status: 'active' });
+  if (existing) {
+    // Backfill externalId for tournaments seeded before football-data integration.
+    if (!existing.externalId) {
+      existing.externalId = 'WC';
+      await existing.save();
+    }
+    return existing;
+  }
+  return TournamentModel.create({
+    name: 'Mundial 2026',
+    year: 2026,
+    status: 'active',
+    externalId: 'WC', // football-data.org FIFA World Cup competition code
+  });
 }
 
 export async function getTournamentById(id: string): Promise<ITournamentDocument> {

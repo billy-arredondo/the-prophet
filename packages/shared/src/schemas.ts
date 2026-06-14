@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { MAX_GOALS, MIN_GOALS } from './constants';
 
 /** Shared enum schemas (kept in sync with types.ts). */
-export const matchStageSchema = z.enum(['group', 'r16', 'qf', 'sf', 'final', 'third_place']);
+export const matchStageSchema = z.enum(['group', 'r32', 'r16', 'qf', 'sf', 'final', 'third_place']);
 export const matchStatusSchema = z.enum(['upcoming', 'live', 'finished']);
 
 /** Query params for GET /api/matches (list, optionally filtered). */

@@ -5,6 +5,7 @@ export interface ITournamentDocument extends Document {
   name: string;
   year: number;
   status: TournamentStatus;
+  externalId: string | null;
 }
 
 const tournamentSchema = new Schema<ITournamentDocument>({
@@ -15,6 +16,8 @@ const tournamentSchema = new Schema<ITournamentDocument>({
     enum: ['upcoming', 'active', 'finished'],
     default: 'upcoming',
   },
+  // External football-API competition code/id (e.g. football-data.org 'WC').
+  externalId: { type: String, default: null },
 });
 
 tournamentSchema.index({ year: 1 });

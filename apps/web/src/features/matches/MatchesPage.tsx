@@ -7,58 +7,6 @@ import { MaterialIcon } from '@/components/ui/MaterialIcon';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
-// ---- Mock data (isolated, easy to remove once API is live) ----
-const MOCK_MATCHES: Match[] = [
-  {
-    id: 'm1',
-    tournamentId: 'wc2026',
-    externalId: null,
-    stage: 'group',
-    groupStage: 'A',
-    homeTeam: 'BRA',
-    awayTeam: 'FRA',
-    kickoff: new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString(),
-    homeScore: null,
-    awayScore: null,
-    status: 'upcoming',
-    resultSource: null,
-    confirmedBy: null,
-    scoredAt: null,
-  },
-  {
-    id: 'm2',
-    tournamentId: 'wc2026',
-    externalId: null,
-    stage: 'group',
-    groupStage: 'B',
-    homeTeam: 'ARG',
-    awayTeam: 'GER',
-    kickoff: new Date(Date.now() - 72 * 60 * 1000).toISOString(),
-    homeScore: 2,
-    awayScore: 1,
-    status: 'live',
-    resultSource: null,
-    confirmedBy: null,
-    scoredAt: null,
-  },
-  {
-    id: 'm3',
-    tournamentId: 'wc2026',
-    externalId: null,
-    stage: 'group',
-    groupStage: 'C',
-    homeTeam: 'ESP',
-    awayTeam: 'JPN',
-    kickoff: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-    homeScore: null,
-    awayScore: null,
-    status: 'upcoming',
-    resultSource: null,
-    confirmedBy: null,
-    scoredAt: null,
-  },
-];
-
 const FLAG_EMOJI: Record<string, string> = {
   BRA: '🇧🇷', FRA: '🇫🇷', ARG: '🇦🇷', GER: '🇩🇪',
   ESP: '🇪🇸', JPN: '🇯🇵', USA: '🇺🇸', MEX: '🇲🇽',
@@ -154,10 +102,7 @@ function MatchCard({
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-2">
           {isLive ? (
-            <>
-              <Badge variant="live">LIVE</Badge>
-              <span className="text-xs text-(--color-on-surface-variant) font-medium">72'</span>
-            </>
+            <Badge variant="live">LIVE</Badge>
           ) : isFinished ? (
             <Badge variant="muted">FINALIZADO</Badge>
           ) : (
@@ -260,10 +205,9 @@ export default function MatchesPage() {
   const finishedQ = useMatches('finished');
   const predictionsQ = useMyPredictions();
 
-  // Fall back to mock data when API is offline
-  const upcoming = upcomingQ.isError ? MOCK_MATCHES.filter((m) => m.status === 'upcoming') : (upcomingQ.data ?? []);
-  const live = liveQ.isError ? MOCK_MATCHES.filter((m) => m.status === 'live') : (liveQ.data ?? []);
-  const finished = finishedQ.isError ? [] : (finishedQ.data ?? []);
+  const upcoming = upcomingQ.data ?? [];
+  const live = liveQ.data ?? [];
+  const finished = finishedQ.data ?? [];
   const predictions = predictionsQ.data ?? [];
 
   return (
