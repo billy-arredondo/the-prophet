@@ -124,13 +124,23 @@ export default function LoginPage() {
         {/* Action Card */}
         <div className="w-full bg-white rounded-xl shadow-[0px_8px_24px_rgba(0,0,0,0.08)] p-6 space-y-4 border border-surface-container">
           {/* Google Sign In */}
-          <button
-            onClick={handleGoogleLogin}
-            className="button-press w-full bg-stadium-green-light hover:bg-stadium-green-dark text-white font-bold h-12 rounded-full flex items-center justify-center gap-4 transition-all"
-          >
-            <GoogleIcon />
-            Continuar con Google
-          </button>
+          <div className="relative p-0.5 rounded-full w-full group">
+            {/* Clockwise border beam on hover */}
+            <div
+              className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-border-spin"
+              style={{
+                background:
+                  'conic-gradient(from var(--border-angle), transparent 72%, #1976d2 83%, transparent 88%)',
+              }}
+            />
+            <button
+              onClick={handleGoogleLogin}
+              className="relative button-press w-full bg-stadium-green-dark text-white font-bold h-12 rounded-full flex items-center justify-center gap-4 transition-all z-10"
+            >
+              <GoogleIcon />
+              Continuar con Google
+            </button>
+          </div>
 
           {/* Divider */}
           <div className="relative flex items-center py-2">
@@ -196,7 +206,7 @@ export default function LoginPage() {
 
 function GoogleIcon() {
   return (
-    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path
         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
         fill="#4285F4"

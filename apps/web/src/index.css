@@ -164,12 +164,27 @@ body {
   100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
 }
 
+/* Enables CSS interpolation of --border-angle so conic-gradient can animate */
+@property --border-angle {
+  syntax: '<angle>';
+  initial-value: 0turn;
+  inherits: false;
+}
+
+@keyframes border-spin {
+  to { --border-angle: 1turn; }
+}
+
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
 
 .animate-confetti {
   animation: confetti-fall 10s linear infinite;
+}
+
+.animate-border-spin {
+  animation: border-spin 2s linear infinite;
 }
 
 /* ============================================================
