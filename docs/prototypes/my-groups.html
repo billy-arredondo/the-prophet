@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
+  <title>Mundialito - Mis Grupos</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <!-- Tailwind Configuration -->
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "pitch-black": "#121212",
+            "surface-container": "#edeeef",
+            "jersey-white": "#FFFFFF",
+            "surface-container-low": "#f3f4f5",
+            "secondary-fixed-dim": "#e9c400",
+            "surface": "#f8f9fa",
+            "on-tertiary-fixed-variant": "#930010",
+            "on-secondary": "#ffffff",
+            "error": "#ba1a1a",
+            "on-primary-fixed": "#002203",
+            "surface-bright": "#f8f9fa",
+            "secondary-fixed": "#ffe16d",
+            "on-primary-container": "#90d689",
+            "secondary": "#705d00",
+            "on-secondary-fixed-variant": "#544600",
+            "outline-variant": "#c0c9bb",
+            "on-primary": "#ffffff",
+            "on-tertiary-container": "#ffb2aa",
+            "on-background": "#191c1d",
+            "on-tertiary": "#ffffff",
+            "on-surface-variant": "#41493e",
+            "surface-container-lowest": "#ffffff",
+            "on-error": "#ffffff",
+            "tertiary-fixed": "#ffdad6",
+            "stadium-green-light": "#4C9141",
+            "on-tertiary-fixed": "#410003",
+            "trophy-gold-muted": "#FFECB3",
+            "background": "#f8f9fa",
+            "on-primary-fixed-variant": "#0c5216",
+            "secondary-container": "#fcd400",
+            "primary-container": "#1b5e20",
+            "on-error-container": "#93000a",
+            "outline": "#717a6d",
+            "tertiary-fixed-dim": "#ffb3ac",
+            "surface-container-high": "#e7e8e9",
+            "primary-fixed-dim": "#91d78a",
+            "surface-dim": "#d9dadb",
+            "tertiary": "#7c000b",
+            "stadium-green-dark": "#003300",
+            "surface-container-highest": "#e1e3e4",
+            "score-red": "#E53935",
+            "inverse-primary": "#91d78a",
+            "inverse-surface": "#2e3132",
+            "tertiary-container": "#a70515",
+            "error-container": "#ffdad6",
+            "on-secondary-fixed": "#221b00",
+            "primary-fixed": "#acf4a4",
+            "action-blue": "#1976D2",
+            "surface-tint": "#2a6b2c",
+            "on-secondary-container": "#6e5c00",
+            "surface-variant": "#e1e3e4",
+            "inverse-on-surface": "#f0f1f2",
+            "primary": "#00450d",
+            "on-surface": "#191c1d"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin-desktop": "40px",
+            "lg": "24px",
+            "base": "4px",
+            "md": "16px",
+            "xs": "8px",
+            "margin-mobile": "16px",
+            "xl": "32px",
+            "sm": "12px",
+            "gutter": "16px"
+          },
+          "fontFamily": {
+            "label-sm": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "display-score": ["Inter"],
+            "headline-md": ["Inter"],
+            "headline-lg": ["Inter"],
+            "body-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "label-bold": ["Inter"]
+          },
+          "fontSize": {
+            "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+            "display-score": ["48px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-bold": ["14px", { "lineHeight": "20px", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .bento-card {
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .bento-card:active {
+      transform: scale(0.97);
+    }
+  </style>
+  <style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+  <!-- TopAppBar -->
+  <header
+    class="docked full-width top-0 sticky z-40 bg-surface dark:bg-pitch-black shadow-sm flex justify-between items-center px-margin-mobile h-16 w-full">
+    <div class="flex items-center gap-xs">
+      <span class="material-symbols-outlined text-stadium-green-light dark:text-primary-fixed-dim"
+        data-icon="sports_soccer">sports_soccer</span>
+      <h1 class="font-display-score text-headline-md text-stadium-green-dark dark:text-primary-fixed">Mundialito</h1>
+    </div>
+    <div class="flex items-center gap-md">
+      <button
+        class="hover:bg-surface-container-low dark:hover:bg-surface-dim transition-colors p-2 rounded-full Active: opacity-80 scale-95 transition-transform">
+        <span class="material-symbols-outlined text-on-surface-variant dark:text-outline-variant"
+          data-icon="notifications">notifications</span>
+      </button>
+    </div>
+  </header>
+  <main class="max-w-[720px] mx-auto px-margin-mobile mt-lg">
+    <!-- Header Section -->
+    <div class="flex justify-between items-end mb-lg">
+      <div>
+        <p class="font-label-sm text-label-sm text-stadium-green-light uppercase tracking-wider mb-base">Campeonato 2026
+        </p>
+        <h2
+          class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface">
+          Mis Grupos</h2>
+      </div>
+      <button
+        class="h-12 w-12 bg-stadium-green-light text-jersey-white rounded-xl shadow-lg flex items-center justify-center hover:bg-stadium-green-dark transition-all active:scale-95">
+        <span class="material-symbols-outlined" data-icon="add">add</span>
+      </button>
+    </div>
+    <!-- Groups Bento Grid/List -->
+    <div class="grid grid-cols-1 gap-md">
+      <!-- Group Card 1: Active + Pending Predictions -->
+      <div
+        class="bento-card bg-jersey-white rounded-xl p-md shadow-[0px_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30 flex flex-col gap-sm relative overflow-hidden">
+        <div class="absolute top-0 right-0 p-3">
+          <span
+            class="bg-score-red text-jersey-white font-label-bold text-label-sm px-xs py-1 rounded-full animate-pulse">
+            Predict Now
+          </span>
+        </div>
+        <div class="flex items-center gap-md">
+          <div class="w-16 h-16 rounded-full overflow-hidden bg-surface-container flex items-center justify-center">
+            <img class="w-full h-full object-cover"
+              data-alt="A stylized group avatar icon for a family prediction group called Los Garcia, featuring warm colors, friendly illustrations of diverse family members in football jerseys, and a celebratory sunny background in a modern vector style."
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNPBDb8_jIxboKoTfT1hvhj17d_j-dL9p-tNfZHroSioaC0_wNhgpYsVdxwSE5JArT_tbGmzaqg5InrgsIoHzE6JNyPJnIo2btobdp8bEonpK7FYp5JFe-OAObz2_kdbKKoQJna4kpPIKme3ikZB0DU7AzgbIdyO8LggSSxEiGxPgvdFn9QDe3XskKsI5K4r9oMDsSubNDrSZfSRG3D9qwvRoJUNgm1n-lYydDmOq-Za_pweiHsUcH9zM76eXsJFNyB9jwn5bp-5w" />
+          </div>
+          <div>
+            <h3 class="font-headline-md text-headline-md text-on-surface">Los García</h3>
+            <div class="flex items-center gap-base mt-base">
+              <span class="material-symbols-outlined text-trophy-gold-muted text-[18px]" data-icon="leaderboard"
+                data-weight="fill" style="font-variation-settings: 'FILL' 1;">leaderboard</span>
+              <p class="font-label-bold text-label-bold text-on-surface-variant">4º de 12</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-between items-center mt-xs pt-sm border-t border-surface-container-low">
+          <div class="flex -space-x-2">
+            <img alt="Member 1" class="w-8 h-8 rounded-full border-2 border-jersey-white"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCavoPtUKjI28xe1NHpMnQ7UKSJrLTY1L_Q58zRqqdpY4lPfOseLnQ43HXmfOrekRLOadmtgs91mpLLmzbLRbu-OrqbOdId6IDnMjsxhKUxoiCnhkPzb_3aLiTma_sS2yZVuPDmj4vQH2f7DbF6u121razUTVlGr5H2oDDQGi2-L-mCUPx21FmLamU3S4y0lDw6brywngdlUtiDkhKLI2ABIR9fX7jBcfiraITUQFtaV9lVvLQBahGXLrB2JYPtdKhJ5CcTU7dRtw" />
+            <img alt="Member 2" class="w-8 h-8 rounded-full border-2 border-jersey-white"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuADH0mmWHOMTmsEUZrp_fw3JUu7p7JJlRqXTtLihbFyih2BnmxYBrIJOYTd5ivVVKokVo8DxNVkJ5hDzhEdpsFtLd1kM7FQVotwMrbhJjZEm2oRQTv2cieskQN8PF8FNztRSkZW5xAwbjmHrL-ZKkJW76spz1rkHRbxc6IVMwp67iVXxMLZyTZrwKqWrFE6cOliTsUBYpTKkhvEy2TZuKg4TT0gR4NpYsCmgWVT4dKrO0Jdn74OD-Rg9Ybpb1N2JVwiqBypuKx72uA" />
+            <img alt="Member 3" class="w-8 h-8 rounded-full border-2 border-jersey-white"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUHWkDf8Dqy0lSHaPoXDswOStCugzJvzB_bIJdIyZdgSuhkEidJsG9ncBYaNRiAJ9N4epeBOvPREPEKt_oNiSHOYFBNISC1VprTsmv6PV35lWSDM4l4BJ0FF-sY7Vb1e2qUBxM_2clx_aBJOs8kqjU2Dpb_-6g2w0uLsxiCe6GxkVZNrb1ShUZce86WBQFpmKxl3mBTxUifZxVegYMH0YUTVCpUan01Q48tSnZZQe0dZqagdEvfyF89nvYEoKCi_pj2TKVsXqqmZE" />
+            <div
+              class="w-8 h-8 rounded-full border-2 border-jersey-white bg-surface-container-highest flex items-center justify-center text-[10px] font-bold">
+              +9</div>
+          </div>
+          <button
+            class="bg-stadium-green-light/10 text-stadium-green-light font-label-bold text-label-sm px-md py-2 rounded-lg hover:bg-stadium-green-light hover:text-jersey-white transition-colors">
+            Ver Clasificación
+          </button>
+        </div>
+      </div>
+      <!-- Group Card 2: Office Group -->
+      <div
+        class="bento-card bg-jersey-white rounded-xl p-md shadow-[0px_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30 flex flex-col gap-sm">
+        <div class="flex items-center gap-md">
+          <div class="w-16 h-16 rounded-full overflow-hidden bg-surface-container flex items-center justify-center">
+            <img class="w-full h-full object-cover"
+              data-alt="A professional yet festive group avatar for an office prediction league, featuring silhouettes of people in business casual attire with football scarves and confetti, using a corporate blue and stadium green palette in a clean modern illustration style."
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNlSdB10KEOH-Fr6a8PLQK8epS10XOheWZNsaSgnWsdUbQ61rr-8i_lO0R2GK2QrDlNG9imZ1mJsjIzs6WCzf-R47PFqhWHxIHmHudtTegWzCsk4Vq1yvpj19RUicuWgYuBlyY-Ardk_M4LA8--c5J8g8b36DegW7asiJN-K83oruk-ty9yXmNVlM0RftweMmOPt1A-D3QnnNqvZQNvPHkO77ZIhXkqnbUgi_S3B6QAfDCG9CYm_xuzFd-ZquZkAMkh3tBCw3jWEE" />
+          </div>
+          <div>
+            <h3 class="font-headline-md text-headline-md text-on-surface">Oficina Mundialista</h3>
+            <div class="flex items-center gap-base mt-base text-secondary-fixed-dim">
+              <span class="material-symbols-outlined text-[18px]" data-icon="stars" data-weight="fill"
+                style="font-variation-settings: 'FILL' 1;">stars</span>
+              <p class="font-label-bold text-label-bold text-on-surface-variant">1º de 45</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-between items-center mt-xs pt-sm border-t border-surface-container-low">
+          <p class="font-body-md text-body-md text-on-surface-variant">Próximo match: <span class="font-bold">ARG vs
+              FRA</span></p>
+          <button
+            class="border-2 border-stadium-green-light text-stadium-green-light font-label-bold text-label-sm px-md py-2 rounded-lg hover:bg-stadium-green-light hover:text-jersey-white transition-colors">
+            Ver Grupo
+          </button>
+        </div>
+      </div>
+      <!-- Group Card 3: Friends -->
+      <div
+        class="bento-card bg-jersey-white rounded-xl p-md shadow-[0px_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/30 flex flex-col gap-sm">
+        <div class="flex items-center gap-md">
+          <div class="w-16 h-16 rounded-full overflow-hidden bg-surface-container flex items-center justify-center">
+            <img class="w-full h-full object-cover"
+              data-alt="A vibrant and energetic avatar representing a group of close friends, showing high-fives and football goal celebrations with bright pops of red, yellow, and blue, set against a stadium green background in a cheerful 2D vector style."
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAo90UZ4RIWRR1NG37opttm1Uhu75O3u8Q9mP3LN6-LDC8FoTOizyfWcR799xMoYX47xJP05ZoTt5BIowsot4i-6zKGSyX26RBJNPPA5N6sq1kO43QKIrxgmIrJU-xgXspedTHdG9vqQgSh4yRRTt_81E8SQadGrVMCpF14MVnr00sZT9JJPYkvwR3ktEg5BPiC16A8ydDPsDuFFN9vYqGlV5N6-5Cdy3tastPPGkJi7D75yOSQyqueKYR-aWxQjEPKRSP5i8aSM00" />
+          </div>
+          <div>
+            <h3 class="font-headline-md text-headline-md text-on-surface">Los Pibes de Siempre</h3>
+            <div class="flex items-center gap-base mt-base">
+              <span class="material-symbols-outlined text-outline text-[18px]"
+                data-icon="leaderboard">leaderboard</span>
+              <p class="font-label-bold text-label-bold text-on-surface-variant">8º de 10</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-between items-center mt-xs pt-sm border-t border-surface-container-low">
+          <span
+            class="font-label-sm text-label-sm bg-surface-container-low text-on-surface-variant px-xs py-1 rounded">Al
+            día</span>
+          <button
+            class="bg-stadium-green-light/10 text-stadium-green-light font-label-bold text-label-sm px-md py-2 rounded-lg hover:bg-stadium-green-light hover:text-jersey-white transition-colors">
+            Ver Grupo
+          </button>
+        </div>
+      </div>
+      <!-- Empty State / Join Action -->
+      <div
+        class="mt-lg p-xl rounded-xl border-2 border-dashed border-outline-variant flex flex-col items-center justify-center text-center bg-surface-container-lowest/50">
+        <span class="material-symbols-outlined text-[48px] text-outline mb-md" data-icon="group_add">group_add</span>
+        <h4 class="font-headline-md text-headline-md text-on-surface-variant">¿Falta alguien?</h4>
+        <p class="font-body-md text-body-md text-outline mt-xs mb-lg">Crea un grupo nuevo o únete con un código de
+          invitación.</p>
+        <div class="flex gap-md w-full max-w-[400px]">
+          <button
+            class="flex-1 h-12 bg-jersey-white border-2 border-stadium-green-light text-stadium-green-light rounded-xl font-label-bold text-label-bold hover:bg-surface-container-low transition-all">
+            Unirse
+          </button>
+          <button
+            class="flex-1 h-12 bg-stadium-green-light text-jersey-white rounded-xl font-label-bold text-label-bold shadow-lg hover:bg-stadium-green-dark transition-all">
+            Crear Grupo
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- BottomNavBar -->
+  <nav
+    class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-jersey-white dark:bg-pitch-black shadow-[0px_-4px_12px_rgba(0,0,0,0.05)] rounded-t-xl">
+    <a class="flex flex-col items-center justify-center bg-primary-container dark:bg-on-primary-fixed-variant text-on-primary-container dark:text-primary-fixed rounded-full px-4 py-1 Active: scale-90 duration-150 ease-out"
+      href="#">
+      <span class="material-symbols-outlined" data-icon="group" data-weight="fill"
+        style="font-variation-settings: 'FILL' 1;">group</span>
+      <span class="font-label-sm text-label-sm">Groups</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant p-2 hover:bg-surface-container-highest dark:hover:bg-on-surface-variant rounded-full transition-colors"
+      href="#">
+      <span class="material-symbols-outlined" data-icon="emoji_events">emoji_events</span>
+      <span class="font-label-sm text-label-sm">Matches</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant p-2 hover:bg-surface-container-highest dark:hover:bg-on-surface-variant rounded-full transition-colors"
+      href="#">
+      <span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+      <span class="font-label-sm text-label-sm">Rankings</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant p-2 hover:bg-surface-container-highest dark:hover:bg-on-surface-variant rounded-full transition-colors"
+      href="#">
+      <span class="material-symbols-outlined" data-icon="person">person</span>
+      <span class="font-label-sm text-label-sm">Profile</span>
+    </a>
+  </nav>
+  <script>
+    // Simple micro-interaction for cards
+    document.querySelectorAll('.bento-card').forEach(card => {
+      card.addEventListener('mousedown', () => {
+        card.style.transform = 'scale(0.98)';
+      });
+      card.addEventListener('mouseup', () => {
+        card.style.transform = 'scale(1)';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'scale(1)';
+      });
+    });
+
+    // Add haptic feedback simulation on buttons
+    document.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (window.navigator.vibrate) {
+          window.navigator.vibrate(10);
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

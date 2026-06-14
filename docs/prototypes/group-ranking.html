@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "pitch-black": "#121212",
+            "surface-container": "#edeeef",
+            "jersey-white": "#FFFFFF",
+            "surface-container-low": "#f3f4f5",
+            "secondary-fixed-dim": "#e9c400",
+            "surface": "#f8f9fa",
+            "on-tertiary-fixed-variant": "#930010",
+            "on-secondary": "#ffffff",
+            "error": "#ba1a1a",
+            "on-primary-fixed": "#002203",
+            "surface-bright": "#f8f9fa",
+            "secondary-fixed": "#ffe16d",
+            "on-primary-container": "#90d689",
+            "secondary": "#705d00",
+            "on-secondary-fixed-variant": "#544600",
+            "outline-variant": "#c0c9bb",
+            "on-primary": "#ffffff",
+            "on-tertiary-container": "#ffb2aa",
+            "on-background": "#191c1d",
+            "on-tertiary": "#ffffff",
+            "on-surface-variant": "#41493e",
+            "surface-container-lowest": "#ffffff",
+            "on-error": "#ffffff",
+            "tertiary-fixed": "#ffdad6",
+            "stadium-green-light": "#4C9141",
+            "on-tertiary-fixed": "#410003",
+            "trophy-gold-muted": "#FFECB3",
+            "background": "#f8f9fa",
+            "on-primary-fixed-variant": "#0c5216",
+            "secondary-container": "#fcd400",
+            "primary-container": "#1b5e20",
+            "on-error-container": "#93000a",
+            "outline": "#717a6d",
+            "tertiary-fixed-dim": "#ffb3ac",
+            "surface-container-high": "#e7e8e9",
+            "primary-fixed-dim": "#91d78a",
+            "surface-dim": "#d9dadb",
+            "tertiary": "#7c000b",
+            "stadium-green-dark": "#003300",
+            "surface-container-highest": "#e1e3e4",
+            "score-red": "#E53935",
+            "inverse-primary": "#91d78a",
+            "inverse-surface": "#2e3132",
+            "tertiary-container": "#a70515",
+            "error-container": "#ffdad6",
+            "on-secondary-fixed": "#221b00",
+            "primary-fixed": "#acf4a4",
+            "action-blue": "#1976D2",
+            "surface-tint": "#2a6b2c",
+            "on-secondary-container": "#6e5c00",
+            "surface-variant": "#e1e3e4",
+            "inverse-on-surface": "#f0f1f2",
+            "primary": "#00450d",
+            "on-surface": "#191c1d"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin-desktop": "40px",
+            "lg": "24px",
+            "base": "4px",
+            "md": "16px",
+            "xs": "8px",
+            "margin-mobile": "16px",
+            "xl": "32px",
+            "sm": "12px",
+            "gutter": "16px"
+          },
+          "fontFamily": {
+            "label-sm": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "display-score": ["Inter"],
+            "headline-md": ["Inter"],
+            "headline-lg": ["Inter"],
+            "body-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "label-bold": ["Inter"]
+          },
+          "fontSize": {
+            "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+            "display-score": ["48px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-bold": ["14px", { "lineHeight": "20px", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .bento-shadow {
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .active-scale:active {
+      transform: scale(0.95);
+      transition: transform 0.1s ease;
+    }
+  </style>
+  <style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+  <!-- TopAppBar -->
+  <header
+    class="bg-surface dark:bg-pitch-black shadow-sm docked full-width top-0 sticky z-40 flex justify-between items-center px-margin-mobile h-16 w-full">
+    <div class="flex items-center gap-xs">
+      <span class="material-symbols-outlined text-stadium-green-light dark:text-primary-fixed-dim"
+        data-icon="sports_soccer">sports_soccer</span>
+      <h1 class="font-display-score text-headline-md text-stadium-green-dark dark:text-primary-fixed tracking-tight">
+        Mundialito</h1>
+    </div>
+    <button
+      class="material-symbols-outlined text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-low dark:hover:bg-surface-dim transition-colors p-2 rounded-full active-scale"
+      data-icon="notifications">notifications</button>
+  </header>
+  <main class="max-w-[720px] mx-auto px-margin-mobile pt-lg">
+    <!-- Group Hero Card (Bento Style) -->
+    <section class="mb-lg">
+      <div
+        class="bg-jersey-white rounded-xl p-lg bento-shadow relative overflow-hidden border-b-2 border-surface-container">
+        <!-- Background decorative element -->
+        <div class="absolute -top-12 -right-12 w-32 h-32 bg-stadium-green-light opacity-10 rounded-full blur-2xl"></div>
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-md">
+          <div>
+            <span class="font-label-bold text-label-bold text-stadium-green-light mb-1 block">GRUPO ACTUAL</span>
+            <h2 class="font-headline-lg-mobile text-headline-lg-mobile md:text-headline-lg text-on-surface">Los García
+            </h2>
+            <div class="flex items-center gap-xs mt-xs text-on-surface-variant">
+              <span class="material-symbols-outlined text-sm" data-icon="groups">groups</span>
+              <p class="font-body-md text-body-md">12 participantes</p>
+            </div>
+          </div>
+          <div
+            class="bg-surface-container-low rounded-lg p-sm border border-outline-variant/30 flex flex-col gap-1 min-w-[140px]">
+            <span class="font-label-sm text-label-sm text-on-surface-variant">INVITE CODE</span>
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-lg tracking-widest text-primary">GARCIA2026</span>
+              <button class="material-symbols-outlined text-stadium-green-light active-scale"
+                data-icon="content_copy">content_copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Leaderboard -->
+    <section class="bg-jersey-white rounded-xl bento-shadow border-b-2 border-surface-container overflow-hidden">
+      <div class="px-lg py-md border-b border-surface-container-low flex justify-between items-center">
+        <h3 class="font-headline-md text-headline-md">Clasificación</h3>
+        <span class="material-symbols-outlined text-on-surface-variant" data-icon="filter_list">filter_list</span>
+      </div>
+      <!-- Rankings Container -->
+      <div class="divide-y divide-surface-container-low">
+        <!-- Rank 1 -->
+        <div class="flex items-center px-lg py-md hover:bg-surface-container-low transition-colors group">
+          <div class="w-10 flex justify-center">
+            <span class="material-symbols-outlined text-secondary-container text-3xl" data-icon="workspace_premium"
+              style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+          </div>
+          <div class="relative ml-xs">
+            <img alt="Juan García" class="w-12 h-12 rounded-full border-2 border-secondary-container"
+              data-alt="A close-up portrait of a cheerful young man with a warm smile, set against a blurred background of a modern park. The lighting is soft and natural, reflecting a vibrant and family-friendly atmosphere. The overall style is modern and tactile, with high-definition details and a bright, optimistic color palette that fits the Mundialito theme."
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpXWSil_uBoeFbQYmWp5mHNUmgRjBSQAbwytSZkTf_Q7V6RqcLXQ1kPHv9K8ELH6GQT1Oq_lQzZBY62KRbJRdMTPRwS9aKJFxFNLRKMYYBQx0hl_SSi3pXZXwTcF6ogJVJTugMM3QjnS5dyAvkoEbhB22LEP8-mrWKSCFs_AoZi756RdyzqMb4M9Iykv_cEwGlAK3k1KSagPS6EXztteOH5Pc8mwHsChzQv_8kpeTLsW88XmHOmdwiSVFCiX_Usj-CxPmOlWmTxLg" />
+          </div>
+          <div class="ml-md flex-1">
+            <p class="font-label-bold text-label-bold text-on-surface">Juan García</p>
+            <p class="font-label-sm text-label-sm text-on-surface-variant">8 aciertos exactos</p>
+          </div>
+          <div class="text-right">
+            <p class="font-display-score text-headline-md text-stadium-green-dark">124</p>
+            <p class="font-label-sm text-label-sm text-stadium-green-light">PTS</p>
+          </div>
+        </div>
+        <!-- Rank 2 -->
+        <div class="flex items-center px-lg py-md hover:bg-surface-container-low transition-colors">
+          <div class="w-10 flex justify-center">
+            <span class="material-symbols-outlined text-outline-variant text-2xl" data-icon="workspace_premium"
+              style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+          </div>
+          <div class="relative ml-xs">
+            <img alt="Elena M." class="w-12 h-12 rounded-full border-2 border-outline-variant"
+              data-alt="A portrait of a smiling woman with glasses, expressing enthusiasm in a casual, sunlit setting. The background shows a soft-focus stadium seating, capturing the excitement of a global tournament. The visual style is clean and accessible, with a balanced use of whitespace and high-contrast text that enhances the tactile feel of the user interface."
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSv4VJVPsF7i6lI8_mGZVZcpLl-iShgA9Ip1KdgDx_cXDbaq38jM7XCb_UTayI10_54a8DBgjBy0lyD0Zqc3DngNBGzu2c9MyhwIrR4u76YQ_DM6-ZI8dWFEAwlVWILqO53jAnHldQeTV0i-Y07q2iUJDnN9NeCwkWHN5zAdNDKm8e3nSS-GR9Ln-GwPiyXd14pst6YHOX6GMcBg7DhVUFlU37voBowOGpXGlK6ziCwaW49xuKs6PcuBAG_VUAwbD0ktN68DhCyws" />
+          </div>
+          <div class="ml-md flex-1">
+            <p class="font-label-bold text-label-bold text-on-surface">Elena M.</p>
+            <p class="font-label-sm text-label-sm text-on-surface-variant">5 aciertos exactos</p>
+          </div>
+          <div class="text-right">
+            <p class="font-display-score text-headline-md text-on-surface-variant">112</p>
+            <p class="font-label-sm text-label-sm text-on-surface-variant">PTS</p>
+          </div>
+        </div>
+        <!-- Rank 3 -->
+        <div class="flex items-center px-lg py-md hover:bg-surface-container-low transition-colors">
+          <div class="w-10 flex justify-center">
+            <span class="material-symbols-outlined text-secondary-fixed-dim text-2xl" data-icon="workspace_premium"
+              style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+          </div>
+          <div class="relative ml-xs">
+            <img alt="Carlos R." class="w-12 h-12 rounded-full border-2 border-secondary-fixed-dim"
+              data-alt="A medium shot of a man wearing a football jersey, cheering with his hands raised, set in a bright, modern interior room with soft lighting. The image captures the energetic and festive mood of a sports fan during a major competition. The style is modern, utilizing high-saturation accents like stadium green to ground the experience in football culture."
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXYHxSou_EeEDldId1l7w93bz33dIakdqcGtLbgi9Y3PSnN_5My2WFsPKHdCJAeMcbfJDXLSu_EFDJsfqBQkWw3llo-pMwtSDRRlCSMYkDJlRPAo2JFqsgnX2i2LDson2zlUk42NtO5lQp9b6qFz5dj9MUF7SuVxqxm8DS2rutcuZ7OTTdXjJlI6YAz-R7hAAX0T9c1sm-DO9WSza0m4OLD3cWmhidqUmGNncfmEMPmp-ByRW9lKxmch2KluJFES8aoYnsDAtZ0GE" />
+          </div>
+          <div class="ml-md flex-1">
+            <p class="font-label-bold text-label-bold text-on-surface">Carlos R.</p>
+            <p class="font-label-sm text-label-sm text-on-surface-variant">4 aciertos exactos</p>
+          </div>
+          <div class="text-right">
+            <p class="font-display-score text-headline-md text-on-surface-variant">98</p>
+            <p class="font-label-sm text-label-sm text-on-surface-variant">PTS</p>
+          </div>
+        </div>
+        <!-- User Current Rank (Self) -->
+        <div
+          class="flex items-center px-lg py-md bg-stadium-green-light/10 border-l-4 border-stadium-green-light hover:bg-stadium-green-light/20 transition-colors">
+          <div class="w-10 flex justify-center">
+            <span class="font-display-score text-headline-md text-stadium-green-light">4</span>
+          </div>
+          <div class="relative ml-xs">
+            <img alt="Tú" class="w-12 h-12 rounded-full border-2 border-stadium-green-light"
+              data-alt="A portrait of a confident person looking directly at the camera, with a background suggestive of a festive community gathering. The lighting is warm and ambient, emphasizing a tactile and friendly aesthetic. The composition is clean, with the subject centered to match the professional design quality required for a leaderboard ranking display."
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCRNgc6tKTq_9jcECmukCPd-VF8fEvwdbW_FgpesyhWXb2kU9y0hZXd2IIcImbRE-POUEA8hzOmy8nAZ__JU0VWCtsBkMCX5lu1UbesHqi2hD9NU_FEJVyc0srlOGrb3vqbbOVF2tA4zFRVTitf9nYfeuRnnN--hBf88HZiYkCSW16XNTFNWdZXFS5HceOVT6jVjRiw8LImKSqJk0Tu2lpUpedP2wnAdtYH0Ja1IdJe4d_XhEBtp3aoGl6yTapbBQbo9jhzrLXDQo" />
+          </div>
+          <div class="ml-md flex-1">
+            <p class="font-label-bold text-label-bold text-stadium-green-dark">Tú (Diego)</p>
+            <p class="font-label-sm text-label-sm text-stadium-green-light">Subiendo +2 posiciones</p>
+          </div>
+          <div class="text-right">
+            <p class="font-display-score text-headline-md text-stadium-green-dark">92</p>
+            <p class="font-label-sm text-label-sm text-stadium-green-light">PTS</p>
+          </div>
+        </div>
+        <!-- Rank 5 -->
+        <div class="flex items-center px-lg py-md hover:bg-surface-container-low transition-colors opacity-80">
+          <div class="w-10 flex justify-center">
+            <span class="font-display-score text-headline-md text-outline-variant">5</span>
+          </div>
+          <div class="relative ml-xs">
+            <img alt="Sofia L." class="w-12 h-12 rounded-full"
+              data-alt="A soft-lit portrait of a young woman with a festive scarf, set in a cozy, bright room that feels like a family viewing party. The colors are muted but with clear stadium-green accents. The mood is calm yet expectant, fitting for a casual backyard football game atmosphere translated into a modern UI component."
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZJpybEqKjrJL1xGZdMenhNBSq1t6HXw7EkQnXNlfbUgWZu28iK4Zby9a-ulSxpTXVDGA_-uarfE2JcJv-jw5RQJXoqtwy7N8ssZndl19VYcx1PkZAgauXXCN6tql7c6shmxbacFImXyuc21GgIZvNdrEZ06dSH120lLzwK-Zgz0onqkN2lYFiOXRKFJM9ZGq1fqOJtwgB7W2gdY6CXc7RkdhX7vNmpeu8dpUuP8JWSrVjKdP1zHYvh9K6fuGEwwKGnjN6TzUtyhY" />
+          </div>
+          <div class="ml-md flex-1">
+            <p class="font-label-bold text-label-bold text-on-surface">Sofia L.</p>
+            <p class="font-label-sm text-label-sm text-on-surface-variant">3 aciertos exactos</p>
+          </div>
+          <div class="text-right">
+            <p class="font-display-score text-headline-md text-on-surface-variant">87</p>
+            <p class="font-label-sm text-label-sm text-on-surface-variant">PTS</p>
+          </div>
+        </div>
+      </div>
+      <!-- View All Footer -->
+      <button
+        class="w-full py-md text-center font-label-bold text-stadium-green-light border-t border-surface-container-low hover:bg-surface-container-low active-scale transition-colors">
+        VER RANKING COMPLETO
+      </button>
+    </section>
+    <!-- Invite Button Section -->
+    <section class="mt-lg">
+      <button
+        class="w-full py-4 bg-stadium-green-light text-jersey-white rounded-xl font-label-bold text-lg flex items-center justify-center gap-xs bento-shadow active-scale shadow-[0px_4px_0px_#003300] hover:translate-y-[-2px] hover:shadow-[0px_6px_0px_#003300] transition-all">
+        <span class="material-symbols-outlined" data-icon="person_add">person_add</span>
+        Invitar Amigos
+      </button>
+      <p class="text-center mt-md font-body-md text-body-md text-on-surface-variant">
+        Gana +10 pts por cada amigo que se una al grupo.
+      </p>
+    </section>
+  </main>
+  <!-- BottomNavBar -->
+  <nav
+    class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-jersey-white dark:bg-pitch-black shadow-[0px_-4px_12px_rgba(0,0,0,0.05)] rounded-t-xl">
+    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant p-2 hover:bg-surface-container-highest dark:hover:bg-on-surface-variant rounded-full transition-colors active-scale"
+      href="#">
+      <span class="material-symbols-outlined" data-icon="group">group</span>
+      <span class="font-label-sm text-label-sm">Groups</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant p-2 hover:bg-surface-container-highest dark:hover:bg-on-surface-variant rounded-full transition-colors active-scale"
+      href="#">
+      <span class="material-symbols-outlined" data-icon="emoji_events">emoji_events</span>
+      <span class="font-label-sm text-label-sm">Matches</span>
+    </a>
+    <a class="flex flex-col items-center justify-center bg-primary-container dark:bg-on-primary-fixed-variant text-on-primary-container dark:text-primary-fixed rounded-full px-4 py-1 scale-90 duration-150 ease-out"
+      href="#">
+      <span class="material-symbols-outlined" data-icon="leaderboard"
+        style="font-variation-settings: 'FILL' 1;">leaderboard</span>
+      <span class="font-label-sm text-label-sm">Rankings</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant p-2 hover:bg-surface-container-highest dark:hover:bg-on-surface-variant rounded-full transition-colors active-scale"
+      href="#">
+      <span class="material-symbols-outlined" data-icon="person">person</span>
+      <span class="font-label-sm text-label-sm">Profile</span>
+    </a>
+  </nav>
+  <script>
+    // Simple copy to clipboard interaction
+    document.querySelector('[data-icon="content_copy"]').parentElement.addEventListener('click', () => {
+      const code = "GARCIA2026";
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.querySelector('[data-icon="content_copy"]');
+        const originalIcon = btn.innerText;
+        btn.innerText = 'check';
+        btn.classList.add('text-primary');
+        setTimeout(() => {
+          btn.innerText = originalIcon;
+          btn.classList.remove('text-primary');
+        }, 2000);
+      });
+    });
+  </script>
+</body>
+
+</html>

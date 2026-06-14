@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
+  <title>Mundialito - Match Predictions</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "pitch-black": "#121212",
+            "surface-container": "#edeeef",
+            "jersey-white": "#FFFFFF",
+            "surface-container-low": "#f3f4f5",
+            "secondary-fixed-dim": "#e9c400",
+            "surface": "#f8f9fa",
+            "on-tertiary-fixed-variant": "#930010",
+            "on-secondary": "#ffffff",
+            "error": "#ba1a1a",
+            "on-primary-fixed": "#002203",
+            "surface-bright": "#f8f9fa",
+            "secondary-fixed": "#ffe16d",
+            "on-primary-container": "#90d689",
+            "secondary": "#705d00",
+            "on-secondary-fixed-variant": "#544600",
+            "outline-variant": "#c0c9bb",
+            "on-primary": "#ffffff",
+            "on-tertiary-container": "#ffb2aa",
+            "on-background": "#191c1d",
+            "on-tertiary": "#ffffff",
+            "on-surface-variant": "#41493e",
+            "surface-container-lowest": "#ffffff",
+            "on-error": "#ffffff",
+            "tertiary-fixed": "#ffdad6",
+            "stadium-green-light": "#4C9141",
+            "on-tertiary-fixed": "#410003",
+            "trophy-gold-muted": "#FFECB3",
+            "background": "#f8f9fa",
+            "on-primary-fixed-variant": "#0c5216",
+            "secondary-container": "#fcd400",
+            "primary-container": "#1b5e20",
+            "on-error-container": "#93000a",
+            "outline": "#717a6d",
+            "tertiary-fixed-dim": "#ffb3ac",
+            "surface-container-high": "#e7e8e9",
+            "primary-fixed-dim": "#91d78a",
+            "surface-dim": "#d9dadb",
+            "tertiary": "#7c000b",
+            "stadium-green-dark": "#003300",
+            "surface-container-highest": "#e1e3e4",
+            "score-red": "#E53935",
+            "inverse-primary": "#91d78a",
+            "inverse-surface": "#2e3132",
+            "tertiary-container": "#a70515",
+            "error-container": "#ffdad6",
+            "on-secondary-fixed": "#221b00",
+            "primary-fixed": "#acf4a4",
+            "action-blue": "#1976D2",
+            "surface-tint": "#2a6b2c",
+            "on-secondary-container": "#6e5c00",
+            "surface-variant": "#e1e3e4",
+            "inverse-on-surface": "#f0f1f2",
+            "primary": "#00450d",
+            "on-surface": "#191c1d"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin-desktop": "40px",
+            "lg": "24px",
+            "base": "4px",
+            "md": "16px",
+            "xs": "8px",
+            "margin-mobile": "16px",
+            "xl": "32px",
+            "sm": "12px",
+            "gutter": "16px"
+          },
+          "fontFamily": {
+            "label-sm": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "display-score": ["Inter"],
+            "headline-md": ["Inter"],
+            "headline-lg": ["Inter"],
+            "body-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "label-bold": ["Inter"]
+          },
+          "fontSize": {
+            "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+            "display-score": ["48px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-bold": ["14px", { "lineHeight": "20px", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .active-tab {
+      position: relative;
+    }
+
+    .active-tab::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: #4C9141;
+      border-radius: 99px;
+    }
+  </style>
+  <style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+
+<body class="bg-surface text-on-surface min-h-screen font-body-md pb-32">
+  <!-- TopAppBar -->
+  <header
+    class="bg-surface dark:bg-pitch-black shadow-sm docked full-width top-0 sticky z-40 flex justify-between items-center px-margin-mobile h-16 w-full">
+    <div class="flex items-center gap-xs">
+      <span class="material-symbols-outlined text-stadium-green-light dark:text-primary-fixed-dim">sports_soccer</span>
+      <h1 class="font-display-score text-headline-md text-stadium-green-dark dark:text-primary-fixed">Mundialito</h1>
+    </div>
+    <button
+      class="text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-low dark:hover:bg-surface-dim transition-colors p-2 rounded-full active:opacity-80 active:scale-95 transition-transform">
+      <span class="material-symbols-outlined">notifications</span>
+    </button>
+  </header>
+  <main class="max-w-[720px] mx-auto px-margin-mobile mt-lg">
+    <!-- Hero Shader / Atmosphere -->
+    <div class="relative h-32 w-full rounded-xl overflow-hidden mb-lg bg-stadium-green-dark">
+
+      <div class="absolute inset-0 flex flex-col justify-center px-md text-jersey-white z-10">
+        <h2 class="font-headline-lg-mobile text-headline-lg-mobile">World Cup Predictions</h2>
+        <p class="font-body-md text-body-md opacity-90">Place your bets before kickoff!</p>
+      </div>
+    </div>
+    <!-- Tab Bar -->
+    <div class="flex items-center border-b border-outline-variant mb-lg overflow-x-auto no-scrollbar gap-lg">
+      <button
+        class="active-tab py-sm px-base font-label-bold text-label-bold text-stadium-green-light whitespace-nowrap">Próximos</button>
+      <button class="py-sm px-base font-label-bold text-label-bold text-on-surface-variant whitespace-nowrap">En
+        Vivo</button>
+      <button
+        class="py-sm px-base font-label-bold text-label-bold text-on-surface-variant whitespace-nowrap">Finalizados</button>
+    </div>
+    <!-- Match Cards Container -->
+    <div class="space-y-md">
+      <!-- Match Card: Brazil vs France (Upcoming) -->
+      <div
+        class="bg-jersey-white rounded-xl p-md shadow-[0px_4px_12px_rgba(0,0,0,0.05)] border border-surface-container-high transition-transform active:scale-[0.99]">
+        <div class="flex justify-between items-center mb-sm">
+          <span
+            class="bg-stadium-green-light text-jersey-white px-2 py-1 rounded-full text-[10px] font-bold tracking-wider">UPCOMING</span>
+          <span class="font-label-sm text-label-sm text-on-surface-variant">Today, 18:00</span>
+        </div>
+        <div class="flex items-center justify-between gap-md">
+          <!-- Home Team -->
+          <div class="flex flex-col items-center flex-1 text-center">
+            <div
+              class="w-16 h-16 rounded-full overflow-hidden mb-xs bg-surface-container flex items-center justify-center">
+              <img alt="Brazil" class="w-full h-full object-cover"
+                data-alt="A detailed, vibrant illustration of the Brazil national flag with its green field, yellow rhombus, and blue globe with white stars. The style is modern and clean, capturing the festive spirit of a international football tournament with high-saturation colors and sharp edges."
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKp1NayxweIuwhzudmlfcvizPW0OwGbk5DW2zWItywEiD9GiG-DPL2sSIpTMA0cGBozkcCgoawo3Gj_bIuS0ooOX1gsBLl-OmlW2DxkOcQAwh1bD7zEE_XKuKqvwuH3H3qZn77DN_PRPLtmaDjy4x6c7SicEHE2wpTkvh1VcZaEOlW7wCK8rJmCpMlP3BKogSH9KkjAKaEHgoiNXcdXgtoDYelc7WkAvuX7c1fry4u-oYTZiEzoEGP6L6SI72wV9Ln-YZm1rY2gVo" />
+            </div>
+            <p class="font-label-bold text-label-bold truncate w-full">Brazil</p>
+          </div>
+          <!-- Input Stepper (Home) -->
+          <div class="flex items-center bg-surface-container-low rounded-lg p-1">
+            <button
+              class="w-10 h-10 flex items-center justify-center text-on-surface hover:bg-surface-container-high rounded-lg transition-colors"
+              onclick="decrement('score-bra')">
+              <span class="material-symbols-outlined text-[20px]">remove</span>
+            </button>
+            <span class="w-10 text-center font-display-score text-headline-md" id="score-bra">0</span>
+            <button
+              class="w-10 h-10 flex items-center justify-center text-on-surface hover:bg-surface-container-high rounded-lg transition-colors"
+              onclick="increment('score-bra')">
+              <span class="material-symbols-outlined text-[20px]">add</span>
+            </button>
+          </div>
+          <span class="font-display-score text-headline-md text-outline-variant px-2">vs</span>
+          <!-- Input Stepper (Away) -->
+          <div class="flex items-center bg-surface-container-low rounded-lg p-1">
+            <button
+              class="w-10 h-10 flex items-center justify-center text-on-surface hover:bg-surface-container-high rounded-lg transition-colors"
+              onclick="decrement('score-fra')">
+              <span class="material-symbols-outlined text-[20px]">remove</span>
+            </button>
+            <span class="w-10 text-center font-display-score text-headline-md" id="score-fra">0</span>
+            <button
+              class="w-10 h-10 flex items-center justify-center text-on-surface hover:bg-surface-container-high rounded-lg transition-colors"
+              onclick="increment('score-fra')">
+              <span class="material-symbols-outlined text-[20px]">add</span>
+            </button>
+          </div>
+          <!-- Away Team -->
+          <div class="flex flex-col items-center flex-1 text-center">
+            <div
+              class="w-16 h-16 rounded-full overflow-hidden mb-xs bg-surface-container flex items-center justify-center">
+              <img alt="France" class="w-full h-full object-cover"
+                data-alt="A clean and vibrant digital rendering of the French tricolor flag with its blue, white, and red vertical stripes. The lighting is bright and optimistic, fitting a world-class sporting event atmosphere. The visual style is crisp, modern, and friendly, aligned with a festive global celebration."
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvFlqWTkcAbN6jS9yRfRL8P0ghKwP-bnJeaWtz8KXYUUEAlwA-CjQLgK5EQZhTN9A-OaZUXxVsajp4wbwva5Mly7Sd_3urQjIdL51O-B3O0gHjEcl2kOve0ThlsUj7Jbx7K-kcXR48OyoR1Xv3QOosvCDTQkGj0Adq06c7S4DFQ3umwJL59b8L4OBWpGU3IzVjG8nsXSN1-fnHtd0Pycckiwj4b5xGR_pUcISbOScC2HpxOfmqUGeGUbot7uHCKIz4pbD-o8A-IQY" />
+            </div>
+            <p class="font-label-bold text-label-bold truncate w-full">France</p>
+          </div>
+        </div>
+      </div>
+      <!-- Match Card: Argentina vs Germany (Locked/Live) -->
+      <div
+        class="bg-surface-container-lowest rounded-xl p-md shadow-sm border border-outline-variant opacity-80 relative">
+        <div class="flex justify-between items-center mb-sm">
+          <div class="flex items-center gap-xs">
+            <span
+              class="bg-score-red text-jersey-white px-2 py-1 rounded-full text-[10px] font-bold animate-pulse">LIVE</span>
+            <span class="text-on-surface-variant font-label-sm text-label-sm">72'</span>
+          </div>
+          <span class="material-symbols-outlined text-outline text-[18px]">lock</span>
+        </div>
+        <div class="flex items-center justify-between gap-md">
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-16 h-16 rounded-full overflow-hidden mb-xs grayscale-[0.5] border-2 border-outline-variant">
+              <img alt="Argentina" class="w-full h-full object-cover"
+                data-alt="The national flag of Argentina, featuring its sky blue and white horizontal bands with the golden Sun of May at the center. The image is styled as a professional graphic for a sports app, with soft ambient shadows and high contrast. The mood is serious and competitive, reflecting a high-stakes football match."
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHxR6SAzxdhJWBC51l1SVYFtDaLIzHWPqfkGx8yQjjSczt2rb4o8y8NdsErN35e1XXdIbk3lsf1h8JrwsgkCLrFxVE27q8auU9rA39ReslTbsUUbKh2p49GU5Osow-SSCLrlNRTPyBKipMpUM56N3gjeK3eY5iXJA29a_aUqMYqcAoKRz17YsHAV5VUXmV1Rf1aaMaqHVLO2rUPmvaHVGGdyRa8Ff1YW8Y0kB4VDixcWsmTbzDRYNR20uc9Tl4PocrrM4k4Uge9Rg" />
+            </div>
+            <p class="font-label-bold text-label-bold">Argentina</p>
+          </div>
+          <div class="flex items-center gap-md">
+            <span class="font-display-score text-display-score">2</span>
+            <span class="font-display-score text-headline-md text-outline-variant">-</span>
+            <span class="font-display-score text-display-score">1</span>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-16 h-16 rounded-full overflow-hidden mb-xs grayscale-[0.5] border-2 border-outline-variant">
+              <img alt="Germany" class="w-full h-full object-cover"
+                data-alt="The German national flag with its black, red, and gold horizontal stripes. Rendered with a clean, tactile texture that suggests a premium sporting event interface. The lighting is subtle but clear, focusing on the vibrant colors. The design aesthetic is modern, minimalist, and authoritative."
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCixLz_SvczLdmglOpn-yNCPoTBnQYzpWIFHenzh9k0p3KM_Q7FLCkre7t9O9cvkHPxVsOXRiqHwYJnef32ORDYcBwXOV0OccYQh2rnjXXu4D1Tl7yl-rcqbEEm6TN-KeL8iTepE6WmUaDaHaUxar9SwLHictJNT33Py5AFSqrC9lgexPL_ES6wZAD7lsD9hXtk-q31yz0Bn40eI5nfujFjhotzkk43X0rNMqgL6BY0DrO0WHennhw6Kag8jVoIlzVnY6PoDG4kZ2s" />
+            </div>
+            <p class="font-label-bold text-label-bold">Germany</p>
+          </div>
+        </div>
+        <!-- Prediction Lock Overlay -->
+        <div class="absolute inset-0 bg-surface/10 rounded-xl cursor-not-allowed"></div>
+      </div>
+      <!-- Match Card: Spain vs Japan (Upcoming) -->
+      <div
+        class="bg-jersey-white rounded-xl p-md shadow-[0px_4px_12px_rgba(0,0,0,0.05)] border border-surface-container-high transition-transform active:scale-[0.99]">
+        <div class="flex justify-between items-center mb-sm">
+          <span
+            class="bg-stadium-green-light text-jersey-white px-2 py-1 rounded-full text-[10px] font-bold tracking-wider">UPCOMING</span>
+          <span class="font-label-sm text-label-sm text-on-surface-variant">Tomorrow, 14:00</span>
+        </div>
+        <div class="flex items-center justify-between gap-md">
+          <div class="flex flex-col items-center flex-1 text-center">
+            <div class="w-16 h-16 rounded-full overflow-hidden mb-xs bg-surface-container">
+              <img alt="Spain" class="w-full h-full object-cover"
+                data-alt="The Spanish flag, with its red and yellow horizontal stripes and the coat of arms. The visual style is vibrant and friendly, with a modern digital finish. The lighting creates a sense of depth and quality, as if the flag is part of a high-end tournament broadcast graphic."
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIorcDryT6bjDJnYEdSoykJw0b8QPNpgsSJ4tIs1I17Skn6DXYnTX6jsoKCEq_rQjAUr8bBHvHJM75pBB2DRkdE-fWnRVww91tbHTUd3dFvQhUtOqFkG3gnl5ib3p_JwEhjeAQytzCuzJJgohRyUMh7ASWFvQJIQaehTcPvA8W9X3dNO-YQgPGb5GoNlsWKe9ipOAgpn-08Z3pIe7uNfCLkaRq_Hv9G5HITlQmdkdOvVuzY3D9OCFS4IGJ5nbt3fH3mh_69sNhJnE" />
+            </div>
+            <p class="font-label-bold text-label-bold">Spain</p>
+          </div>
+          <div class="flex items-center bg-surface-container-low rounded-lg p-1">
+            <button
+              class="w-10 h-10 flex items-center justify-center text-on-surface hover:bg-surface-container-high rounded-lg transition-colors"
+              onclick="decrement('score-esp')">
+              <span class="material-symbols-outlined text-[20px]">remove</span>
+            </button>
+            <span class="w-10 text-center font-display-score text-headline-md" id="score-esp">1</span>
+            <button
+              class="w-10 h-10 flex items-center justify-center text-on-surface hover:bg-surface-container-high rounded-lg transition-colors"
+              onclick="increment('score-esp')">
+              <span class="material-symbols-outlined text-[20px]">add</span>
+            </button>
+          </div>
+          <span class="font-display-score text-headline-md text-outline-variant px-2">vs</span>
+          <div class="flex items-center bg-surface-container-low rounded-lg p-1">
+            <button
+              class="w-10 h-10 flex items-center justify-center text-on-surface hover:bg-surface-container-high rounded-lg transition-colors"
+              onclick="decrement('score-jap')">
+              <span class="material-symbols-outlined text-[20px]">remove</span>
+            </button>
+            <span class="w-10 text-center font-display-score text-headline-md" id="score-jap">1</span>
+            <button
+              class="w-10 h-10 flex items-center justify-center text-on-surface hover:bg-surface-container-high rounded-lg transition-colors"
+              onclick="increment('score-jap')">
+              <span class="material-symbols-outlined text-[20px]">add</span>
+            </button>
+          </div>
+          <div class="flex flex-col items-center flex-1 text-center">
+            <div class="w-16 h-16 rounded-full overflow-hidden mb-xs bg-surface-container">
+              <img alt="Japan" class="w-full h-full object-cover"
+                data-alt="A minimalist and sharp depiction of the Japanese flag with its iconic red sun on a white background. The image has a clean, tactile quality with soft ambient lighting and deep colors. The aesthetic is modern and accessible, grounded in a premium sports-app design language."
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaU0yAGio76BJ1ZSUJcMeLyqFm8mCtVYV6-RGHqDt2xk9QHpdRexNKyigWCYmV8r-jHT5vblCuKZ4sc9t7Co-zvVJNTNJhpDvsz4osPILE952zFyyAK9ufpCGyVA0nlrTUiCUH05ipZPsV7Kz7zra-H7L3Illu9Swm1nA0JxEJxWQRVkx-MV5kjmhzi-pxdcUWRO5-T18CVuoXJTIcuTmpu7zVYEqpVYN8KpA6N2RJE06ITMg6YX4IPZEDKCTnUuAq1sJnKA_g8I8" />
+            </div>
+            <p class="font-label-bold text-label-bold">Japan</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- Floating Action Button: Save Predictions -->
+  <button
+    class="fixed bottom-24 right-margin-mobile flex items-center gap-xs bg-stadium-green-light text-jersey-white px-6 py-4 rounded-full shadow-lg hover:bg-stadium-green-dark transition-all transform active:scale-90 z-50"
+    id="save-btn">
+    <span class="material-symbols-outlined">save</span>
+    <span class="font-label-bold text-label-bold">Save Predictions</span>
+  </button>
+  <!-- BottomNavBar -->
+  <nav
+    class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-jersey-white dark:bg-pitch-black shadow-[0px_-4px_12px_rgba(0,0,0,0.05)] rounded-t-xl">
+    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant p-2 hover:bg-surface-container-highest dark:hover:bg-on-surface-variant rounded-full transition-colors"
+      href="#">
+      <span class="material-symbols-outlined">group</span>
+      <span class="font-label-sm text-label-sm">Groups</span>
+    </a>
+    <a class="flex flex-col items-center justify-center bg-primary-container dark:bg-on-primary-fixed-variant text-on-primary-container dark:text-primary-fixed rounded-full px-4 py-1 scale-90 duration-150 ease-out"
+      href="#">
+      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+      <span class="font-label-sm text-label-sm">Matches</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant p-2 hover:bg-surface-container-highest dark:hover:bg-on-surface-variant rounded-full transition-colors"
+      href="#">
+      <span class="material-symbols-outlined">leaderboard</span>
+      <span class="font-label-sm text-label-sm">Rankings</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant p-2 hover:bg-surface-container-highest dark:hover:bg-on-surface-variant rounded-full transition-colors"
+      href="#">
+      <span class="material-symbols-outlined">person</span>
+      <span class="font-label-sm text-label-sm">Profile</span>
+    </a>
+  </nav>
+  <script>
+    function increment(id) {
+      const el = document.getElementById(id);
+      let val = parseInt(el.innerText);
+      el.innerText = val + 1;
+      animatePress(el);
+    }
+
+    function decrement(id) {
+      const el = document.getElementById(id);
+      let val = parseInt(el.innerText);
+      if (val > 0) {
+        el.innerText = val - 1;
+        animatePress(el);
+      }
+    }
+
+    function animatePress(el) {
+      el.classList.add('scale-125', 'text-stadium-green-light');
+      setTimeout(() => {
+        el.classList.remove('scale-125', 'text-stadium-green-light');
+      }, 150);
+    }
+
+    document.getElementById('save-btn').addEventListener('click', function () {
+      const btn = this;
+      const originalContent = btn.innerHTML;
+
+      btn.innerHTML = `
+                <span class="material-symbols-outlined animate-spin">sync</span>
+                <span class="font-label-bold text-label-bold">Saving...</span>
+            `;
+      btn.classList.add('opacity-80');
+
+      setTimeout(() => {
+        btn.innerHTML = `
+                    <span class="material-symbols-outlined">check_circle</span>
+                    <span class="font-label-bold text-label-bold">Saved!</span>
+                `;
+        btn.classList.remove('bg-stadium-green-light');
+        btn.classList.add('bg-action-blue');
+
+        setTimeout(() => {
+          btn.innerHTML = originalContent;
+          btn.classList.remove('bg-action-blue', 'opacity-80');
+          btn.classList.add('bg-stadium-green-light');
+        }, 2000);
+      }, 1200);
+    });
+
+    // Simple scroll observer for FAB hide/show
+    let lastScrollY = window.scrollY;
+    window.addEventListener('scroll', () => {
+      const fab = document.getElementById('save-btn');
+      if (window.scrollY > lastScrollY) {
+        fab.classList.add('translate-y-24', 'opacity-0');
+      } else {
+        fab.classList.remove('translate-y-24', 'opacity-0');
+      }
+      lastScrollY = window.scrollY;
+    });
+  </script>
+</body>
+
+</html>
