@@ -163,24 +163,13 @@ export default function LoginPage() {
             <div className="grow border-t border-outline-variant" />
           </div>
 
-          {/* Email (placeholder for MVP) */}
-          <button
-            disabled
-            className="w-full bg-white border-2 border-outline-variant text-on-surface-variant font-bold h-12 rounded-full flex items-center justify-center opacity-50 cursor-not-allowed"
-            title="Próximamente"
-          >
-            Usar correo electrónico
-          </button>
-
           {/* Guest */}
-          <div className="text-center pt-1">
-            <button
-              onClick={handleGuestLogin}
-              className="text-sm font-bold text-on-surface-variant hover:text-stadium-green-dark underline underline-offset-4 transition-colors"
-            >
-              Entrar como Invitado
-            </button>
-          </div>
+          <button
+            onClick={handleGuestLogin}
+            className="w-full bg-white border-2 border-outline-variant text-on-surface-variant font-bold h-12 rounded-full flex items-center justify-center button-press transition-all"
+          >
+            Entrar como invitado
+          </button>
         </div>
 
         {/* Footer */}
