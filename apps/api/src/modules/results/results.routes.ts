@@ -7,20 +7,26 @@ import * as ctrl from './results.controller.js';
 
 const router = Router();
 
-// All results routes: must be authenticated + super-admin
-router.use(requireAuth, requireSuperAdmin);
-
-// GET /matches/pending-review
-router.get('/matches/pending-review', ctrl.listPendingReview);
+// Authenticated for the whole router; super-admin is applied PER-ROUTE (not as a
+// blanket router.use) so a non-matching request falls through to later routers
+// instead of being 403'd here — e.g. GET /groups/:id/ranking (rankingsRouter is
+// mounted after this one).
+router.use(requireAuth);
 
 // POST /matches/:id/confirm-result
 router.post(
   '/matches/:id/confirm-result',
+  requireSuperAdmin,
   validate(confirmResultSchema),
   ctrl.confirmMatchResult,
 );
 
 // PATCH /matches/:id/result
-router.patch('/matches/:id/result', validate(overrideResultSchema), ctrl.overrideMatchResult);
+router.patch(
+  '/matches/:id/result',
+  requireSuperAdmin,
+  validate(overrideResultSchema),
+  ctrl.overrideMatchResult,
+);
 
 export default router;

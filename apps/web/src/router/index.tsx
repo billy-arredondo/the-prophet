@@ -10,6 +10,7 @@ const GroupsPage = lazy(() => import('@/features/groups/GroupsPage'));
 const MatchesPage = lazy(() => import('@/features/matches/MatchesPage'));
 const RankingPage = lazy(() => import('@/features/rankings/RankingPage'));
 const ProfilePage = lazy(() => import('@/features/profile/ProfilePage'));
+const AdminPage = lazy(() => import('@/features/admin/AdminPage'));
 
 function LoadingFallback() {
   return (
@@ -80,6 +81,14 @@ export const router = createBrowserRouter([
         element: (
           <SuspenseRoute>
             <ProfilePage />
+          </SuspenseRoute>
+        ),
+      },
+      {
+        path: 'admin',
+        element: (
+          <SuspenseRoute>
+            <AdminPage />
           </SuspenseRoute>
         ),
       },

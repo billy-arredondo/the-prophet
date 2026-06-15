@@ -135,14 +135,10 @@ export async function confirmResult(
 
 /**
  * Override/patch a previously confirmed result (super-admin only).
- * Re-runs the full scoring logic with the new scores.
  *
- * Strategy: reset scoredAt so confirmResult can run again.
- * WARNING: this re-adds points — for a production app you'd want to
- * diff the old vs new points and apply a delta.  Here we take the
- * simpler approach of resetting and re-running.
- *
- * TODO: implement delta-based re-scoring to avoid double-counting.
+ * Delta-based re-scoring: for each prediction we apply only the difference
+ * between its new and old points to the rankings (predictionsCount unchanged),
+ * so corrections never double-count. All writes are transactional.
  */
 export async function overrideResult(
   matchId: string,
@@ -156,23 +152,63 @@ export async function overrideResult(
       const match = await MatchModel.findById(matchId).session(session);
       if (!match) throw new AppError(404, 'Match not found', 'NOT_FOUND');
 
-      // Reset scoring flag so confirmResult can re-score
-      match.scoredAt = null;
-      // Reset existing prediction points so they can be recomputed cleanly
-      await PredictionModel.updateMany(
-        { matchId: match._id },
-        { $set: { points: null } },
-        { session },
-      );
+      const { homeScore, awayScore } = input;
+
+      // 1. Update the match with the corrected (manual) result.
+      match.homeScore = homeScore;
+      match.awayScore = awayScore;
+      match.status = 'finished';
+      match.resultSource = 'manual';
+      match.confirmedBy = new mongoose.Types.ObjectId(adminUserId);
+      if (!match.scoredAt) match.scoredAt = new Date();
       await match.save({ session });
+
+      // 2. Recompute points; track the per-user delta vs the old points.
+      const predictions = await PredictionModel.find({ matchId: match._id }).session(session);
+      if (predictions.length === 0) return;
+
+      const deltaByUser = new Map<string, number>();
+      const bulkPointsOps = predictions.map((pred) => {
+        const oldPts = pred.points ?? 0;
+        const newPts = scorePrediction(pred.predictedHome, pred.predictedAway, homeScore, awayScore);
+        const uid = String(pred.userId);
+        deltaByUser.set(uid, (deltaByUser.get(uid) ?? 0) + (newPts - oldPts));
+        return { updateOne: { filter: { _id: pred._id }, update: { $set: { points: newPts } } } };
+      });
+      await PredictionModel.bulkWrite(bulkPointsOps, { session });
+
+      // 3. Apply the point deltas to every group where each predictor is a member.
+      const predictorIds = predictions.map((p) => p.userId);
+      const affectedGroups = await GroupModel.find({ memberIds: { $in: predictorIds } })
+        .select('_id memberIds')
+        .session(session);
+      const userDocs = await UserModel.find({ _id: { $in: predictorIds } })
+        .select('_id displayName photoURL')
+        .session(session);
+      const userMap = new Map(userDocs.map((u) => [String(u._id), u]));
+
+      const rankingUpdates: Parameters<typeof bulkUpdateRankings>[0] = [];
+      for (const group of affectedGroups) {
+        const memberSet = new Set(group.memberIds.map(String));
+        for (const pred of predictions) {
+          const uid = String(pred.userId);
+          if (!memberSet.has(uid)) continue;
+          const delta = deltaByUser.get(uid) ?? 0;
+          if (delta === 0) continue;
+          const u = userMap.get(uid);
+          rankingUpdates.push({
+            groupId: group._id as mongoose.Types.ObjectId,
+            userId: pred.userId as mongoose.Types.ObjectId,
+            displayName: u?.displayName ?? 'Unknown',
+            photoURL: u?.photoURL ?? null,
+            pointsDelta: delta,
+            predictionsCountDelta: 0, // already counted at confirm time
+          });
+        }
+      }
+      await bulkUpdateRankings(rankingUpdates, session);
     });
   } finally {
     await session.endSession();
   }
-
-  // Re-run confirmResult with the new (explicit) scores
-  await confirmResult(matchId, adminUserId, {
-    homeScore: input.homeScore,
-    awayScore: input.awayScore,
-  });
 }

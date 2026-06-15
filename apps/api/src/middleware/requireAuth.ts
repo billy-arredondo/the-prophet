@@ -67,6 +67,16 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
       });
     }
 
+    // Keep isSuperAdmin in sync with SUPER_ADMIN_EMAILS for existing users
+    // (it's only set at creation otherwise, so changing the env wouldn't apply).
+    if (user.email) {
+      const shouldBeSuper = env.SUPER_ADMIN_EMAILS.includes(user.email);
+      if (shouldBeSuper !== user.isSuperAdmin) {
+        user.isSuperAdmin = shouldBeSuper;
+        await user.save();
+      }
+    }
+
     req.user = user;
     next();
   } catch (err) {

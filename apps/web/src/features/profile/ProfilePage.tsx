@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { useAuthStore } from '@/stores/authStore';
 import { useUiStore } from '@/stores/uiStore';
@@ -232,6 +233,7 @@ function EditProfileModal({
 export default function ProfilePage() {
   const { user, logout } = useAuthStore();
   const { theme, toggleTheme } = useUiStore();
+  const navigate = useNavigate();
   const [showAddMember, setShowAddMember] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false);
 
@@ -318,6 +320,23 @@ export default function ProfilePage() {
               ))}
             </ul>
           )}
+        </div>
+      )}
+
+      {/* Super-admin panel link */}
+      {user.isSuperAdmin && (
+        <div className="bg-white rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.05)] border border-(--color-outline-variant)/30 overflow-hidden mb-6">
+          <button
+            onClick={() => navigate('/admin')}
+            className="w-full flex items-center gap-4 px-6 py-4 hover:bg-(--color-surface-container-low) transition-colors text-left"
+          >
+            <MaterialIcon icon="admin_panel_settings" className="text-(--color-stadium-green-light)" />
+            <div className="flex-1">
+              <p className="text-base font-semibold text-(--color-on-surface)">Panel de administrador</p>
+              <p className="text-xs text-(--color-on-surface-variant)">Confirma resultados oficiales</p>
+            </div>
+            <MaterialIcon icon="chevron_right" className="text-(--color-outline)" />
+          </button>
         </div>
       )}
 
