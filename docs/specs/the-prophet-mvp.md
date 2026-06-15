@@ -106,7 +106,7 @@ Leyenda: ✅ HECHO · 🟡 PARCIAL · ⬜ PENDIENTE
 | **3 — Torneo & matches**                   | ✅     | Integración **football-data.org** (`FootballDataOrgClient`, header `X-Auth-Token`, rate-limit aware); torneo con `externalId='WC'`; `syncMatches` cada 5 min upserta fixtures+scores; enum `MatchStage` ahora incluye `r32`. Verificado e2e: 104 partidos WC2026 reales (próximos/en vivo/finalizados) en `MatchesPage` sin mocks. |
 | **4 — Predicciones**                       | ✅     | Upsert global por usuario + `kickoffLock` (409) + validación `MAX_GOALS`; UI con stepper que prefilla la predicción guardada (incl. al recargar), guarda y bloquea en vivo/finalizado. Verificado e2e (predecir/actualizar/listar/lock/validación). |
 | **5 — Resultados & scoring**               | ✅     | Super-admin confirma resultados (`/admin`) → scoring 3/1/0 + ranking en transacción; override **por delta** (sin doble conteo); `isSuperAdmin` sincronizado con `SUPER_ADMIN_EMAILS`. Fix de ruteo: `requireSuperAdmin` per-ruta (desbloquea ranking) y `/matches/pending-review` antes de `/matches/:id`. Verificado e2e. |
-| **6 — Pulido & deploy**                    | ⬜     | Fidelidad a prototipos, estados vacíos/skeletons, índices, deploy (web + api + CI).                                                                                                                  |
+| **6 — Pulido & deploy**                    | 🟡     | **Pulido hecho:** favicon SVG propio, loader con marca (`LoadingScreen`), skeletons (Matches/Admin/Profile + `Skeleton` reutilizable) y estados de error (Matches/Rankings). **Pendiente:** deploy (web Netlify + api Render, CI, configs prod/cookies cross-domain) — tanda aparte. |
 | **7 — Opcional**                           | ⬜     | Web Push, grupos públicos, feed narrativo, puntos configurables, dark mode.                                                                                                                          |
 
 ---
@@ -172,6 +172,14 @@ Leyenda: ✅ HECHO · 🟡 PARCIAL · ⬜ PENDIENTE
 - Backend: `requireSuperAdmin` **per-ruta** en results (no blanket) → desbloquea `GET /groups/:id/ranking`; `/matches/pending-review` registrado **antes** de `/matches/:id` (evita el 500 por cast); `overrideResult` **por delta** (`newPts−oldPts`, transaccional, sin doble conteo); `requireAuth` sincroniza `isSuperAdmin` con `SUPER_ADMIN_EMAILS` para usuarios existentes.
 - Frontend: panel `/admin` (`AdminPage`, guard super-admin) para confirmar resultados; `useAdmin` (pending-review/confirm/override) invalida matches/predictions/ranking; link "Panel de administrador" en Perfil (solo super-admin).
 - Verificado e2e (API): ranking 200, pending-review 403/200, confirm 200, re-confirm 409, override delta −2=−2.
+
+**2026-06-15 — Fase 6 (pulido)**
+
+- Favicon SVG propio (`public/favicon.svg`) + `apple-touch-icon`; linkeados en `index.html`.
+- `LoadingScreen` (balón con marca) reemplaza el spinner suelto en el `Suspense` del router y en `RequireAuth`.
+- Skeletons: `Skeleton.tsx` reutilizable + `MatchesPage` (arregla el "No hay partidos" durante la carga), `AdminPage`, `ProfilePage`.
+- Estados de error en `MatchesPage` y `RankingPage` (`isError` → "no se pudo cargar, reintenta").
+- Pendiente de Fase 6: deploy (Netlify + Render, CI, prod cookies cross-domain).
 
 > Nota operativa: Better Auth se inicializa **una sola vez al arrancar** (`server.ts`:
 > `connectDb → initAuth`). Si Mongo no está conectado al arranque, el auth queda sin adapter hasta
