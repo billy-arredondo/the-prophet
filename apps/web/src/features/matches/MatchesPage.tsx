@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Match, Prediction, MatchStatus } from '@the-prophet/shared';
 import { useMatches } from '@/hooks/useMatches';
 import { useMyPredictions, useUpsertPrediction } from '@/hooks/usePredictions';
@@ -86,6 +86,13 @@ function MatchCard({
 }) {
   const [home, setHome] = useState(prediction?.predictedHome ?? 0);
   const [away, setAway] = useState(prediction?.predictedAway ?? 0);
+
+  // Prefill from the saved prediction when it arrives (it may load after this card mounts).
+  useEffect(() => {
+    setHome(prediction?.predictedHome ?? 0);
+    setAway(prediction?.predictedAway ?? 0);
+  }, [prediction?.predictedHome, prediction?.predictedAway]);
+
   const isDirty = home !== (prediction?.predictedHome ?? 0) || away !== (prediction?.predictedAway ?? 0);
 
   const isLive = match.status === 'live';
