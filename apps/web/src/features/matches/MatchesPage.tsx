@@ -192,6 +192,28 @@ function MatchCard({
   );
 }
 
+function MatchesSkeleton() {
+  return (
+    <div className="space-y-4">
+      {[1, 2, 3].map((i) => (
+        <div
+          key={i}
+          className="h-36 bg-(--color-surface-container) rounded-xl animate-pulse"
+        />
+      ))}
+    </div>
+  );
+}
+
+function MatchesError() {
+  return (
+    <div className="text-center py-12 text-(--color-on-surface-variant)">
+      <MaterialIcon icon="error" className="text-5xl mb-3 text-(--color-score-red)" />
+      <p className="text-base font-medium">No se pudieron cargar los partidos. Reintenta.</p>
+    </div>
+  );
+}
+
 function MatchList({ matches, predictions }: { matches: Match[]; predictions: Prediction[] }) {
   const predMap = new Map(predictions.map((p) => [p.matchId, p]));
 
@@ -226,6 +248,14 @@ export default function MatchesPage() {
   const finished = finishedQ.data ?? [];
   const predictions = predictionsQ.data ?? [];
 
+  function renderTabContent(status: MatchStatus) {
+    const q = status === 'upcoming' ? upcomingQ : status === 'live' ? liveQ : finishedQ;
+    const matches = status === 'upcoming' ? upcoming : status === 'live' ? live : finished;
+    if (q.isLoading) return <MatchesSkeleton />;
+    if (q.isError) return <MatchesError />;
+    return <MatchList matches={matches} predictions={predictions} />;
+  }
+
   return (
     <div className="mt-6">
       {/* Hero */}
@@ -248,7 +278,8 @@ export default function MatchesPage() {
             Próximos {upcoming.length > 0 && `(${upcoming.length})`}
           </TabsTrigger>
           <TabsTrigger value="live">
-            En Vivo {live.length > 0 && (
+            En Vivo{' '}
+            {live.length > 0 && (
               <span className="ml-1 w-2 h-2 rounded-full bg-(--color-score-red) animate-pulse inline-block" />
             )}
           </TabsTrigger>
@@ -257,10 +288,7 @@ export default function MatchesPage() {
 
         {(['upcoming', 'live', 'finished'] as const).map((s) => (
           <TabsContent key={s} value={s}>
-            <MatchList
-              matches={s === 'upcoming' ? upcoming : s === 'live' ? live : finished}
-              predictions={predictions}
-            />
+            {renderTabContent(s)}
           </TabsContent>
         ))}
       </Tabs>

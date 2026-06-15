@@ -145,7 +145,7 @@ export default function RankingPage() {
   const currentUserId = useAuthStore((s) => s.user?.id);
 
   const { data: group } = useGroup(activeGroupId ?? '');
-  const { data, isLoading } = useRanking(activeGroupId ?? '');
+  const { data, isLoading, isError } = useRanking(activeGroupId ?? '');
   const entries = data ?? [];
 
   if (!activeGroupId) {
@@ -228,6 +228,13 @@ export default function RankingPage() {
         {isLoading ? (
           <div className="p-4">
             <RankingSkeleton />
+          </div>
+        ) : isError ? (
+          <div className="flex flex-col items-center justify-center py-12 gap-3">
+            <MaterialIcon icon="error" className="text-[48px] text-(--color-score-red)" />
+            <p className="text-base text-(--color-on-surface-variant)">
+              No se pudo cargar la clasificación. Reintenta.
+            </p>
           </div>
         ) : entries.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 gap-3">

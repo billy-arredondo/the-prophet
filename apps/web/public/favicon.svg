@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Mundialito">
+  <!-- Stadium-green disc -->
+  <circle cx="32" cy="32" r="30" fill="#4c9141" />
+  <circle cx="32" cy="32" r="30" fill="none" stroke="#003300" stroke-opacity="0.25" stroke-width="2" />
+  <!-- Soccer ball: white base with dark-green panels -->
+  <g>
+    <circle cx="32" cy="32" r="20" fill="#ffffff" />
+    <!-- center pentagon -->
+    <path d="M32 21 L42 28.3 L38.2 40 L25.8 40 L22 28.3 Z" fill="#003300" />
+    <!-- three outer panels -->
+    <path d="M32 12.5 L40 18 L42 28.3 L32 21 L22 28.3 L24 18 Z" fill="#2f6b2a" />
+    <path d="M14.5 38 L22 28.3 L25.8 40 L20.5 49 Z" fill="#2f6b2a" />
+    <path d="M49.5 38 L43.5 49 L38.2 40 L42 28.3 Z" fill="#2f6b2a" />
+    <circle cx="32" cy="32" r="20" fill="none" stroke="#003300" stroke-width="2" />
+  </g>
+</svg>

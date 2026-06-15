@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AppLayout } from './AppLayout';
 import { RequireAuth } from './RequireAuth';
+import { LoadingScreen } from '@/components/ui/LoadingScreen';
 
 // Lazy-load routes — bundle-dynamic-imports pattern
 const LoginPage = lazy(() => import('@/features/auth/LoginPage'));
@@ -12,18 +13,8 @@ const RankingPage = lazy(() => import('@/features/rankings/RankingPage'));
 const ProfilePage = lazy(() => import('@/features/profile/ProfilePage'));
 const AdminPage = lazy(() => import('@/features/admin/AdminPage'));
 
-function LoadingFallback() {
-  return (
-    <div className="flex-1 flex items-center justify-center min-h-[50vh]">
-      <span className="material-symbols-outlined text-stadium-green-light animate-spin text-4xl">
-        sports_soccer
-      </span>
-    </div>
-  );
-}
-
 function SuspenseRoute({ children }: { children: React.ReactNode }) {
-  return <Suspense fallback={<LoadingFallback />}>{children}</Suspense>;
+  return <Suspense fallback={<LoadingScreen />}>{children}</Suspense>;
 }
 
 export const router = createBrowserRouter([

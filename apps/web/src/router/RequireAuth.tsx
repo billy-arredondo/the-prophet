@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
+import { LoadingScreen } from '@/components/ui/LoadingScreen';
 
 interface Props {
   children: React.ReactNode;
@@ -7,19 +8,13 @@ interface Props {
 
 /**
  * Guards routes that require a logged-in (or guest) session.
- * While session is being restored, shows a loading spinner.
+ * While session is being restored, shows the branded loading screen.
  */
 export function RequireAuth({ children }: Props) {
   const { isAuthenticated, isLoading } = useAuthStore();
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-(--color-surface)">
-        <span className="material-symbols-outlined text-(--color-stadium-green-light) animate-spin text-5xl">
-          sports_soccer
-        </span>
-      </div>
-    );
+    return <LoadingScreen fullscreen />;
   }
 
   if (!isAuthenticated) {

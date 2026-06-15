@@ -237,7 +237,7 @@ export default function ProfilePage() {
   const [showAddMember, setShowAddMember] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false);
 
-  const { data: managedMembers = [] } = useManagedMembers();
+  const { data: managedMembers = [], isLoading: membersLoading } = useManagedMembers();
 
   async function handleLogout() {
     try {
@@ -294,7 +294,13 @@ export default function ProfilePage() {
             </button>
           </div>
 
-          {managedMembers.length === 0 ? (
+          {membersLoading ? (
+            <div className="p-4 space-y-3">
+              {[1, 2].map((i) => (
+                <div key={i} className="h-14 bg-(--color-surface-container) rounded-lg animate-pulse" />
+              ))}
+            </div>
+          ) : managedMembers.length === 0 ? (
             <div className="p-6 text-center text-(--color-on-surface-variant)">
               <MaterialIcon icon="child_care" className="text-4xl mb-2" />
               <p className="text-sm">Aún no hay perfiles familiares.</p>
