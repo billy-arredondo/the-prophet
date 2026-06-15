@@ -105,7 +105,7 @@ Leyenda: ✅ HECHO · 🟡 PARCIAL · ⬜ PENDIENTE
 | **2 — Grupos**                             | ✅     | Grupos reales e2e: lista/crear/unirse, selección→detalle (ranking), invitación link/QR (copiar **código** y **enlace** por separado) y `/join` con `?next=` (preserva el código en el login). Mocks eliminados. Seed de torneo por defecto (`ensureDefaultTournament`).                                                                     |
 | **3 — Torneo & matches**                   | ✅     | Integración **football-data.org** (`FootballDataOrgClient`, header `X-Auth-Token`, rate-limit aware); torneo con `externalId='WC'`; `syncMatches` cada 5 min upserta fixtures+scores; enum `MatchStage` ahora incluye `r32`. Verificado e2e: 104 partidos WC2026 reales (próximos/en vivo/finalizados) en `MatchesPage` sin mocks. |
 | **4 — Predicciones**                       | ✅     | Upsert global por usuario + `kickoffLock` (409) + validación `MAX_GOALS`; UI con stepper que prefilla la predicción guardada (incl. al recargar), guarda y bloquea en vivo/finalizado. Verificado e2e (predecir/actualizar/listar/lock/validación). |
-| **5 — Resultados & scoring**               | 🟡     | Scoring puro + confirmación/override + ranking en transacción existen. **Pendiente:** UI de super-admin y re-scoring por delta.                                                                      |
+| **5 — Resultados & scoring**               | ✅     | Super-admin confirma resultados (`/admin`) → scoring 3/1/0 + ranking en transacción; override **por delta** (sin doble conteo); `isSuperAdmin` sincronizado con `SUPER_ADMIN_EMAILS`. Fix de ruteo: `requireSuperAdmin` per-ruta (desbloquea ranking) y `/matches/pending-review` antes de `/matches/:id`. Verificado e2e. |
 | **6 — Pulido & deploy**                    | ⬜     | Fidelidad a prototipos, estados vacíos/skeletons, índices, deploy (web + api + CI).                                                                                                                  |
 | **7 — Opcional**                           | ⬜     | Web Push, grupos públicos, feed narrativo, puntos configurables, dark mode.                                                                                                                          |
 
@@ -166,6 +166,12 @@ Leyenda: ✅ HECHO · 🟡 PARCIAL · ⬜ PENDIENTE
 
 - Verificado e2e: `PUT /api/matches/:id/prediction` (upsert global por usuario), `kickoffLock` → 409 en partidos iniciados, validación de rango (`MAX_GOALS=99`; 100 → 400), `GET /me/predictions` sin duplicados.
 - Fix: el stepper de `MatchesPage` prefilla la predicción guardada también cuando llega tras montar la tarjeta (recarga) — `useEffect` que sincroniza con la prop `prediction`.
+
+**2026-06-14 — Fase 5: Resultados & scoring**
+
+- Backend: `requireSuperAdmin` **per-ruta** en results (no blanket) → desbloquea `GET /groups/:id/ranking`; `/matches/pending-review` registrado **antes** de `/matches/:id` (evita el 500 por cast); `overrideResult` **por delta** (`newPts−oldPts`, transaccional, sin doble conteo); `requireAuth` sincroniza `isSuperAdmin` con `SUPER_ADMIN_EMAILS` para usuarios existentes.
+- Frontend: panel `/admin` (`AdminPage`, guard super-admin) para confirmar resultados; `useAdmin` (pending-review/confirm/override) invalida matches/predictions/ranking; link "Panel de administrador" en Perfil (solo super-admin).
+- Verificado e2e (API): ranking 200, pending-review 403/200, confirm 200, re-confirm 409, override delta −2=−2.
 
 > Nota operativa: Better Auth se inicializa **una sola vez al arrancar** (`server.ts`:
 > `connectDb → initAuth`). Si Mongo no está conectado al arranque, el auth queda sin adapter hasta
